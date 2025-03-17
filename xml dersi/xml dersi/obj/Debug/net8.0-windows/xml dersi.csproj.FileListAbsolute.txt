@@ -1,0 +1,16 @@
+C:\Users\demir\source\repos\xml dersi\xml dersi\bin\Debug\net8.0-windows\xml dersi.exe
+C:\Users\demir\source\repos\xml dersi\xml dersi\bin\Debug\net8.0-windows\xml dersi.deps.json
+C:\Users\demir\source\repos\xml dersi\xml dersi\bin\Debug\net8.0-windows\xml dersi.runtimeconfig.json
+C:\Users\demir\source\repos\xml dersi\xml dersi\bin\Debug\net8.0-windows\xml dersi.dll
+C:\Users\demir\source\repos\xml dersi\xml dersi\bin\Debug\net8.0-windows\xml dersi.pdb
+C:\Users\demir\source\repos\xml dersi\xml dersi\obj\Debug\net8.0-windows\xml_dersi.Form1.resources
+C:\Users\demir\source\repos\xml dersi\xml dersi\obj\Debug\net8.0-windows\xml dersi.csproj.GenerateResource.cache
+C:\Users\demir\source\repos\xml dersi\xml dersi\obj\Debug\net8.0-windows\xml dersi.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\demir\source\repos\xml dersi\xml dersi\obj\Debug\net8.0-windows\xml dersi.AssemblyInfoInputs.cache
+C:\Users\demir\source\repos\xml dersi\xml dersi\obj\Debug\net8.0-windows\xml dersi.AssemblyInfo.cs
+C:\Users\demir\source\repos\xml dersi\xml dersi\obj\Debug\net8.0-windows\xml dersi.csproj.CoreCompileInputs.cache
+C:\Users\demir\source\repos\xml dersi\xml dersi\obj\Debug\net8.0-windows\xml dersi.dll
+C:\Users\demir\source\repos\xml dersi\xml dersi\obj\Debug\net8.0-windows\refint\xml dersi.dll
+C:\Users\demir\source\repos\xml dersi\xml dersi\obj\Debug\net8.0-windows\xml dersi.pdb
+C:\Users\demir\source\repos\xml dersi\xml dersi\obj\Debug\net8.0-windows\xml dersi.genruntimeconfig.cache
+C:\Users\demir\source\repos\xml dersi\xml dersi\obj\Debug\net8.0-windows\ref\xml dersi.dll

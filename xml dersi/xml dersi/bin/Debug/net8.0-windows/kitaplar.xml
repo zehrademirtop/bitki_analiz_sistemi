@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<kitaplar>
+  <kitap>
+    <baslik>sx</baslik>
+    <yazar>sx</yazar>
+  </kitap>
+  <kitap>
+    <baslik>qss</baslik>
+    <yazar>ss</yazar>
+  </kitap>
+</kitaplar>

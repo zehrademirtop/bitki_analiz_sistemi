@@ -1,0 +1,16 @@
+C:\Users\demir\source\repos\aycann\aycann\bin\Debug\net8.0-windows\aycann.exe
+C:\Users\demir\source\repos\aycann\aycann\bin\Debug\net8.0-windows\aycann.deps.json
+C:\Users\demir\source\repos\aycann\aycann\bin\Debug\net8.0-windows\aycann.runtimeconfig.json
+C:\Users\demir\source\repos\aycann\aycann\bin\Debug\net8.0-windows\aycann.dll
+C:\Users\demir\source\repos\aycann\aycann\bin\Debug\net8.0-windows\aycann.pdb
+C:\Users\demir\source\repos\aycann\aycann\obj\Debug\net8.0-windows\aycann.Form1.resources
+C:\Users\demir\source\repos\aycann\aycann\obj\Debug\net8.0-windows\aycann.csproj.GenerateResource.cache
+C:\Users\demir\source\repos\aycann\aycann\obj\Debug\net8.0-windows\aycann.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\demir\source\repos\aycann\aycann\obj\Debug\net8.0-windows\aycann.AssemblyInfoInputs.cache
+C:\Users\demir\source\repos\aycann\aycann\obj\Debug\net8.0-windows\aycann.AssemblyInfo.cs
+C:\Users\demir\source\repos\aycann\aycann\obj\Debug\net8.0-windows\aycann.csproj.CoreCompileInputs.cache
+C:\Users\demir\source\repos\aycann\aycann\obj\Debug\net8.0-windows\aycann.dll
+C:\Users\demir\source\repos\aycann\aycann\obj\Debug\net8.0-windows\refint\aycann.dll
+C:\Users\demir\source\repos\aycann\aycann\obj\Debug\net8.0-windows\aycann.pdb
+C:\Users\demir\source\repos\aycann\aycann\obj\Debug\net8.0-windows\aycann.genruntimeconfig.cache
+C:\Users\demir\source\repos\aycann\aycann\obj\Debug\net8.0-windows\ref\aycann.dll
