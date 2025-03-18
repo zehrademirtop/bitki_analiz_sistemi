@@ -43,14 +43,12 @@ namespace bitki_analiz_sistemi
 
         private void TürAra_Click(object sender, EventArgs e)
         {
-            // Kullanıcı tarafından seçilen combobox değerlerini alıyoruz
-            string cap = comboBoxcap.SelectedItem.ToString();
-            string TuyDurumu = comboBoxTuyDurumu.SelectedItem != null
-    ? comboBoxTuyDurumu.SelectedItem.ToString()
-    : "Seçilmedi"; // Varsayılan bir değer belirleyelim
-            string Yuzey = comboBoxYuzey.SelectedItem.ToString();
-            string Dallanma = comboBoxDallanma.SelectedItem.ToString();
-            string Nodyum = comboBoxNodyum.SelectedItem.ToString();
+            // Kullanıcı tarafından seçilen combobox değerlerini alıyoruz (Null kontrolü ekledik)
+            string cap = comboBoxcap.SelectedItem?.ToString() ?? "";
+            string TuyDurumu = comboBoxTuyDurumu.SelectedItem?.ToString() ?? "";
+            string Yuzey = comboBoxYuzey.SelectedItem?.ToString() ?? "";
+            string Dallanma = comboBoxDallanma.SelectedItem?.ToString() ?? "";
+            string Nodyum = comboBoxNodyum.SelectedItem?.ToString() ?? "";
 
             // SQLite bağlantısını kuruyoruz
             using (SQLiteConnection connection = new SQLiteConnection(connectionString))
@@ -59,8 +57,15 @@ namespace bitki_analiz_sistemi
                 {
                     connection.Open();
 
-                    // Veritabanı sorgusu, seçilen değerlere göre bitkileri arıyoruz
-                    string query = "SELECT * FROM Bitkiler WHERE cap = @cap AND TuyDurumu = @TuyDurumu AND Yuzey = @Yuzey AND Dallanma = @Dallanma AND Nodyum = @Nodyum";
+                    // Veritabanı sorgusu: Null değerleri de kontrol eden düzeltme yapıldı
+                    string query = @"
+                SELECT * FROM Bitkiler 
+                WHERE Cap = @cap 
+                AND (TuyDurumu IS NULL OR TuyDurumu = @TuyDurumu) 
+                AND Yuzey = @Yuzey 
+                AND Dallanma = @Dallanma 
+                AND Nodyum = @Nodyum";
+
                     SQLiteCommand command = new SQLiteCommand(query, connection);
                     command.Parameters.AddWithValue("@cap", cap);
                     command.Parameters.AddWithValue("@TuyDurumu", TuyDurumu);
@@ -74,7 +79,7 @@ namespace bitki_analiz_sistemi
                     {
                         // Eğer eşleşen sonuç varsa, veritabanından bitki adını alıyoruz
                         reader.Read(); // İlk sonucu alıyoruz
-                        string bitkiAdi = reader["bitkiAdi"].ToString(); // bitkiAdi sütunundan adı alıyoruz
+                        string bitkiAdi = reader["BitkiAdi"].ToString(); // Büyük harf düzeltildi
 
                         // Sonuçları label'a yazdırıyoruz
                         TürAdı.Text = "Bulunan Bitki: " + bitkiAdi;
