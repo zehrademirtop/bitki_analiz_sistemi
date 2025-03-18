@@ -266,7 +266,7 @@
             this.TürAra.TabIndex = 30;
             this.TürAra.Text = "TürAra";
             this.TürAra.UseVisualStyleBackColor = false;
-           
+            this.TürAra.Click += new System.EventHandler(this.TürAra_Click);
             // 
             // TürAdı
             // 
@@ -287,7 +287,7 @@
             this.Bilgiver.TabIndex = 32;
             this.Bilgiver.Text = "Bilgiver";
             this.Bilgiver.UseVisualStyleBackColor = false;
-           
+            this.Bilgiver.Click += new System.EventHandler(this.Bilgiver_Click);
             // 
             // Form1
             // 
