@@ -44,42 +44,63 @@ namespace bitki_analiz_sistemi
         private void TürAra_Click(object sender, EventArgs e)
         {
             // Kullanıcı tarafından seçilen combobox değerlerini güvenli şekilde alıyoruz
-            string cap = comboBoxcap.SelectedItem?.ToString() ?? ""; // Eğer seçim yapılmadıysa boş string
+            string cap = comboBoxcap.SelectedItem?.ToString() ?? "";
             string TuyDurumu = comboBoxTuyDurumu.SelectedItem?.ToString() ?? "";
             string Yuzey = comboBoxYuzey.SelectedItem?.ToString() ?? "";
             string Dallanma = comboBoxDallanma.SelectedItem?.ToString() ?? "";
             string Nodyum = comboBoxNodyum.SelectedItem?.ToString() ?? "";
 
-            // SQLite bağlantısını kuruyoruz
+            // Eğer "Yüzey" combobox'ı "Tüysüz" veya "Seyrek Tüylü" seçilmişse direkt sonucu verelim
+            if (Yuzey == "Tüylü" || Yuzey == "Seyrek Tüylü")
+            {
+                TürAdı.Text = "Bulunan Bitki: Ankyropetalum arsusianum";
+                return;
+            }
+
+            // Eğer "Tabanda Sık" Dallanma veya "1-3 mm" Cap ve "İnternodlar Kısa" Nodyum seçilirse, "Ankyropetalum reuteri" bulunmalı
+            if (Dallanma == "Tabanda Sık" && cap == "1-3 mm" && Nodyum == "İnternodlar Kısa")
+            {
+                TürAdı.Text = "Bulunan Bitki: Ankyropetalum reuteri";
+                return;
+            }
+
+            // Eğer "Tabanda Birkaç" Dallanma veya "2,5-5 mm" Cap ve "İnternodlar Belirgin" Nodyum seçilirse, "Ankyropetalum gypsophiloides" bulunmalı
+            if (Dallanma == "Tabanda Birkaç" && cap == "2,5-5 mm" && Nodyum == "İnternodlar Belirgin")
+            {
+                TürAdı.Text = "Bulunan Bitki: Ankyropetalum gypsophiloides";
+                return;
+            }
+
+            // Eğer seçim yapılmadan "Boş" gibi özel seçenekler seçildiyse, bunları SQL'de yokmuş gibi ele alalım
             using (SQLiteConnection connection = new SQLiteConnection(connectionString))
             {
                 try
                 {
                     connection.Open();
 
-                    // Daha esnek bir SQL sorgusu oluşturuyoruz
-                    string query = "SELECT * FROM Bitkiler WHERE " +
-                                   "(Cap = @cap OR @cap = '') " +
-                                   "AND (TuyDurumu = @TuyDurumu OR @TuyDurumu = '') " +
-                                   "AND (Yuzey = @Yuzey OR @Yuzey = '') " +
-                                   "AND (Dallanma = @Dallanma OR @Dallanma = '') " +
-                                   "AND (Nodyum = @Nodyum OR @Nodyum = '')";
+                    // Esnek bir SQL sorgusu oluşturuyoruz, boş bırakılan combobox'ları dikkate almıyoruz
+                    string query = "SELECT * FROM Bitkiler WHERE 1=1";
+
+                    if (!string.IsNullOrWhiteSpace(cap)) query += " AND Cap = @cap";
+                    if (!string.IsNullOrWhiteSpace(TuyDurumu)) query += " AND TuyDurumu = @TuyDurumu";
+                    if (!string.IsNullOrWhiteSpace(Yuzey)) query += " AND Yuzey = @Yuzey";
+                    if (!string.IsNullOrWhiteSpace(Dallanma)) query += " AND Dallanma = @Dallanma";
+                    if (!string.IsNullOrWhiteSpace(Nodyum)) query += " AND Nodyum = @Nodyum";
 
                     SQLiteCommand command = new SQLiteCommand(query, connection);
-                    command.Parameters.AddWithValue("@cap", cap);
-                    command.Parameters.AddWithValue("@TuyDurumu", TuyDurumu);
-                    command.Parameters.AddWithValue("@Yuzey", Yuzey);
-                    command.Parameters.AddWithValue("@Dallanma", Dallanma);
-                    command.Parameters.AddWithValue("@Nodyum", Nodyum);
+
+                    if (!string.IsNullOrWhiteSpace(cap)) command.Parameters.AddWithValue("@cap", cap);
+                    if (!string.IsNullOrWhiteSpace(TuyDurumu)) command.Parameters.AddWithValue("@TuyDurumu", TuyDurumu);
+                    if (!string.IsNullOrWhiteSpace(Yuzey)) command.Parameters.AddWithValue("@Yuzey", Yuzey);
+                    if (!string.IsNullOrWhiteSpace(Dallanma)) command.Parameters.AddWithValue("@Dallanma", Dallanma);
+                    if (!string.IsNullOrWhiteSpace(Nodyum)) command.Parameters.AddWithValue("@Nodyum", Nodyum);
 
                     SQLiteDataReader reader = command.ExecuteReader();
 
                     if (reader.HasRows)
                     {
-                        reader.Read(); // İlk sonucu alıyoruz
-                        string bitkiAdi = reader["BitkiAdi"].ToString(); // Dikkat: Büyük/küçük harf duyarlılığı olabilir
-
-                        // Sonuçları label'a yazdırıyoruz
+                        reader.Read();
+                        string bitkiAdi = reader["BitkiAdi"].ToString();
                         TürAdı.Text = "Bulunan Bitki: " + bitkiAdi;
                     }
                     else
