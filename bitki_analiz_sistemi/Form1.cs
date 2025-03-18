@@ -43,8 +43,8 @@ namespace bitki_analiz_sistemi
 
         private void TürAra_Click(object sender, EventArgs e)
         {
-            // Kullanıcı tarafından seçilen combobox değerlerini alıyoruz (Null kontrolü ekledik)
-            string cap = comboBoxcap.SelectedItem?.ToString() ?? "";
+            // Kullanıcı tarafından seçilen combobox değerlerini güvenli şekilde alıyoruz
+            string cap = comboBoxcap.SelectedItem?.ToString() ?? ""; // Eğer seçim yapılmadıysa boş string
             string TuyDurumu = comboBoxTuyDurumu.SelectedItem?.ToString() ?? "";
             string Yuzey = comboBoxYuzey.SelectedItem?.ToString() ?? "";
             string Dallanma = comboBoxDallanma.SelectedItem?.ToString() ?? "";
@@ -57,14 +57,13 @@ namespace bitki_analiz_sistemi
                 {
                     connection.Open();
 
-                    // Veritabanı sorgusu: Null değerleri de kontrol eden düzeltme yapıldı
-                    string query = @"
-                SELECT * FROM Bitkiler 
-                WHERE Cap = @cap 
-                AND (TuyDurumu IS NULL OR TuyDurumu = @TuyDurumu) 
-                AND Yuzey = @Yuzey 
-                AND Dallanma = @Dallanma 
-                AND Nodyum = @Nodyum";
+                    // Daha esnek bir SQL sorgusu oluşturuyoruz
+                    string query = "SELECT * FROM Bitkiler WHERE " +
+                                   "(Cap = @cap OR @cap = '') " +
+                                   "AND (TuyDurumu = @TuyDurumu OR @TuyDurumu = '') " +
+                                   "AND (Yuzey = @Yuzey OR @Yuzey = '') " +
+                                   "AND (Dallanma = @Dallanma OR @Dallanma = '') " +
+                                   "AND (Nodyum = @Nodyum OR @Nodyum = '')";
 
                     SQLiteCommand command = new SQLiteCommand(query, connection);
                     command.Parameters.AddWithValue("@cap", cap);
@@ -77,16 +76,14 @@ namespace bitki_analiz_sistemi
 
                     if (reader.HasRows)
                     {
-                        // Eğer eşleşen sonuç varsa, veritabanından bitki adını alıyoruz
                         reader.Read(); // İlk sonucu alıyoruz
-                        string bitkiAdi = reader["BitkiAdi"].ToString(); // Büyük harf düzeltildi
+                        string bitkiAdi = reader["BitkiAdi"].ToString(); // Dikkat: Büyük/küçük harf duyarlılığı olabilir
 
                         // Sonuçları label'a yazdırıyoruz
                         TürAdı.Text = "Bulunan Bitki: " + bitkiAdi;
                     }
                     else
                     {
-                        // Eğer eşleşen sonuç yoksa, kullanıcıya bildirimde bulunuyoruz
                         TürAdı.Text = "Bitki bulunamadı.";
                     }
 
