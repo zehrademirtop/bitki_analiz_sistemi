@@ -16,5 +16,10 @@ namespace bitki_analiz_sistemi
         {
             InitializeComponent();
         }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }
