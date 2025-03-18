@@ -1,0 +1,18 @@
+# Visual Studio ile ilgili gereksiz dosyalar
+.vs/
+*.suo
+*.user
+*.cache
+*.csproj.user
+*.dbmdl
+*.log
+
+# Derleme klasörleri
+bin/
+obj/
+Debug/
+Release/
+
+# Paketler
+packages/
+node_modules/
