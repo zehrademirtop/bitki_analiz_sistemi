@@ -24,9 +24,9 @@ namespace bitki_analiz_sistemi
         private void Form1_Load(object sender, EventArgs e)
         {
             comboBoxcap.Items.AddRange(new string[] { "boş", "1-3 mm", "2,5-5 mm" });
-            comboBoxTuyDurumu.Items.AddRange(new string[] { "boş", "Tüylü", "Tüysüz" });
+            comboBoxTuyDurumu.Items.AddRange(new string[] { "boş", "seyrek Tüylü ","Tüylü", "Tüysüz" });
             comboBoxYuzey.Items.AddRange(new string[] { "boş", "Tüylü", "Seyrek Tüylü", "Salgı Tüylü" });
-            comboBoxDallanma.Items.AddRange(new string[] { "boş", "Tabanda Sık", "Tabanda Birkaç" });
+            comboBoxDallanma.Items.AddRange(new string[] { "boş", "Tabanda Sık", "Tabanda Birkaç", "0.0"});
             comboBoxNodyum.Items.AddRange(new string[] { "boş", "İnternodlar Kısa", "İnternodlar Belirgin" });
             comboBoxUzunluk.Items.AddRange(new string[] { "boş" });
             comboBoxDurus.Items.AddRange(new string[] { "boş" });
@@ -35,8 +35,16 @@ namespace bitki_analiz_sistemi
 
         private void Bilgiver_Click(object sender, EventArgs e)
         {
-            Form2 form2 = new Form2();
-            form2.Show();
+            string bitkiAdi = label1.Text.Trim();
+            if (!string.IsNullOrEmpty(bitkiAdi))
+            {
+                Form2 bilgiFormu = new Form2(bitkiAdi);
+                bilgiFormu.ShowDialog();
+            }
+            else
+            {
+                MessageBox.Show("Önce bir bitki türü seçin!", "Uyarı", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
         private void TürAra_Click(object sender, EventArgs e)
