@@ -38,7 +38,16 @@ namespace bitki_analiz_sistemi
         private void Bilgiver_Click(object sender, EventArgs e)
         {
             Form2 form2 = new Form2();
-            form2.Show();  
+
+            // Seçilen bilgileri Form2'ye aktarıyoruz
+            form2.SecilenBitkiAdi = TürAdı.Text;
+            form2.SecilenYuzey = comboBoxYuzey.Text;
+            form2.SecilenDallanma = comboBoxDallanma.Text;
+            form2.SecilenCap = comboBoxcap.Text;
+            form2.SecilenNodyum = comboBoxNodyum.Text;
+
+            // Form2'yi aç ama sadece Show() kullan, ShowDialog() değil
+            form2.Show();
         }
 
         private void TürAra_Click(object sender, EventArgs e)
