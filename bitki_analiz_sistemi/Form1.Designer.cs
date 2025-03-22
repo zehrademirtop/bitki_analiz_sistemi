@@ -46,12 +46,12 @@
             this.comboBoxNodyum = new System.Windows.Forms.ComboBox();
             this.comboBoxUzunluk = new System.Windows.Forms.ComboBox();
             this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
             this.TürAra = new System.Windows.Forms.Button();
             this.TürAdı = new System.Windows.Forms.Label();
             this.Bilgiver = new System.Windows.Forms.Button();
+            this.pictureBoxLogo = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxLogo)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -220,49 +220,29 @@
             // button1
             // 
             this.button1.BackColor = System.Drawing.Color.YellowGreen;
-            this.button1.Location = new System.Drawing.Point(15, 239);
+            this.button1.Location = new System.Drawing.Point(8, 244);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 39);
+            this.button1.Size = new System.Drawing.Size(97, 42);
             this.button1.TabIndex = 26;
             this.button1.Text = "BtnEkle";
             this.button1.UseVisualStyleBackColor = false;
             // 
-            // button2
-            // 
-            this.button2.BackColor = System.Drawing.Color.YellowGreen;
-            this.button2.Location = new System.Drawing.Point(130, 239);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(94, 39);
-            this.button2.TabIndex = 27;
-            this.button2.Text = "BtnGüncelle";
-            this.button2.UseVisualStyleBackColor = false;
-            // 
             // button3
             // 
             this.button3.BackColor = System.Drawing.Color.YellowGreen;
-            this.button3.Location = new System.Drawing.Point(130, 303);
+            this.button3.Location = new System.Drawing.Point(8, 292);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(94, 42);
+            this.button3.Size = new System.Drawing.Size(97, 39);
             this.button3.TabIndex = 28;
             this.button3.Text = "BtnKaydet";
             this.button3.UseVisualStyleBackColor = false;
             // 
-            // button4
-            // 
-            this.button4.BackColor = System.Drawing.Color.YellowGreen;
-            this.button4.Location = new System.Drawing.Point(15, 303);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(75, 42);
-            this.button4.TabIndex = 29;
-            this.button4.Text = "BtnSil";
-            this.button4.UseVisualStyleBackColor = false;
-            // 
             // TürAra
             // 
             this.TürAra.BackColor = System.Drawing.Color.YellowGreen;
-            this.TürAra.Location = new System.Drawing.Point(391, 271);
+            this.TürAra.Location = new System.Drawing.Point(111, 244);
             this.TürAra.Name = "TürAra";
-            this.TürAra.Size = new System.Drawing.Size(177, 44);
+            this.TürAra.Size = new System.Drawing.Size(98, 42);
             this.TürAra.TabIndex = 30;
             this.TürAra.Text = "TürAra";
             this.TürAra.UseVisualStyleBackColor = false;
@@ -271,8 +251,8 @@
             // TürAdı
             // 
             this.TürAdı.AutoSize = true;
-            this.TürAdı.BackColor = System.Drawing.Color.YellowGreen;
-            this.TürAdı.Location = new System.Drawing.Point(586, 285);
+            this.TürAdı.BackColor = System.Drawing.Color.White;
+            this.TürAdı.Location = new System.Drawing.Point(215, 257);
             this.TürAdı.Name = "TürAdı";
             this.TürAdı.Size = new System.Drawing.Size(47, 16);
             this.TürAdı.TabIndex = 31;
@@ -281,13 +261,22 @@
             // Bilgiver
             // 
             this.Bilgiver.BackColor = System.Drawing.Color.YellowGreen;
-            this.Bilgiver.Location = new System.Drawing.Point(391, 353);
+            this.Bilgiver.Location = new System.Drawing.Point(112, 292);
             this.Bilgiver.Name = "Bilgiver";
-            this.Bilgiver.Size = new System.Drawing.Size(177, 48);
+            this.Bilgiver.Size = new System.Drawing.Size(97, 39);
             this.Bilgiver.TabIndex = 32;
             this.Bilgiver.Text = "Bilgiver";
             this.Bilgiver.UseVisualStyleBackColor = false;
             this.Bilgiver.Click += new System.EventHandler(this.Bilgiver_Click);
+            // 
+            // pictureBoxLogo
+            // 
+            this.pictureBoxLogo.Location = new System.Drawing.Point(600, 273);
+            this.pictureBoxLogo.Name = "pictureBoxLogo";
+            this.pictureBoxLogo.Size = new System.Drawing.Size(253, 201);
+            this.pictureBoxLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBoxLogo.TabIndex = 33;
+            this.pictureBoxLogo.TabStop = false;
             // 
             // Form1
             // 
@@ -295,12 +284,11 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Tan;
             this.ClientSize = new System.Drawing.Size(865, 486);
+            this.Controls.Add(this.pictureBoxLogo);
             this.Controls.Add(this.Bilgiver);
             this.Controls.Add(this.TürAdı);
             this.Controls.Add(this.TürAra);
-            this.Controls.Add(this.button4);
             this.Controls.Add(this.button3);
-            this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.comboBoxUzunluk);
             this.Controls.Add(this.comboBoxNodyum);
@@ -322,6 +310,7 @@
             this.Name = "Form1";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxLogo)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -346,12 +335,11 @@
         private System.Windows.Forms.ComboBox comboBoxNodyum;
         private System.Windows.Forms.ComboBox comboBoxUzunluk;
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Button TürAra;
         private System.Windows.Forms.Label TürAdı;
         private System.Windows.Forms.Button Bilgiver;
+        private System.Windows.Forms.PictureBox pictureBoxLogo;
     }
 }
 

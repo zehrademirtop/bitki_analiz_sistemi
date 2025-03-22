@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -33,20 +34,15 @@ namespace bitki_analiz_sistemi
             string girilenKullaniciAdi = txtKullaniciAdi.Text.Trim();
             string girilenSifre = txtSifre.Text.Trim();
 
-            if (girilenKullaniciAdi.Equals(dogruKullaniciAdi, StringComparison.OrdinalIgnoreCase) &&
-                girilenSifre == dogruSifre)
+            if (IsGirisDogru(girilenKullaniciAdi, girilenSifre, dogruKullaniciAdi, dogruSifre))
             {
                 MessageBox.Show("Giriş başarılı!", "Başarılı", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                // ListView'e verileri ekle
-                listViewBilgiler.Items.Add(new ListViewItem(new string[] { "Bitki Adı", SecilenBitkiAdi }));
-                listViewBilgiler.Items.Add(new ListViewItem(new string[] { "Yüzey", SecilenYuzey }));
-                listViewBilgiler.Items.Add(new ListViewItem(new string[] { "Dallanma", SecilenDallanma }));
-                listViewBilgiler.Items.Add(new ListViewItem(new string[] { "Çap", SecilenCap }));
-                listViewBilgiler.Items.Add(new ListViewItem(new string[] { "Nodyum", SecilenNodyum }));
+                // 📌 ListView'e verileri ekle
+                GuncelleListView();
 
                 // 📌 Bitki adına göre resim göster
-                ShowBitkiImage(SecilenBitkiAdi);
+                ShowBitkiImage(SecilenBitkiAdi); // Burada bitki resmini yükle
             }
             else
             {
@@ -56,36 +52,53 @@ namespace bitki_analiz_sistemi
             }
         }
 
+        // 📌 Giriş bilgilerini kontrol eden fonksiyon
+        private bool IsGirisDogru(string girilenKullaniciAdi, string girilenSifre, string dogruKullaniciAdi, string dogruSifre)
+        {
+            return girilenKullaniciAdi.Equals(dogruKullaniciAdi, StringComparison.OrdinalIgnoreCase) && girilenSifre == dogruSifre;
+        }
+
+        // 📌 ListView'e verileri eklemek için fonksiyon
+        private void GuncelleListView()
+        {
+            listViewBilgiler.Items.Clear(); // Önce ListView'i temizle
+
+            listViewBilgiler.Items.Add(new ListViewItem(new string[] { "Bitki Adı", SecilenBitkiAdi }));
+            listViewBilgiler.Items.Add(new ListViewItem(new string[] { "Yüzey", SecilenYuzey }));
+            listViewBilgiler.Items.Add(new ListViewItem(new string[] { "Dallanma", SecilenDallanma }));
+            listViewBilgiler.Items.Add(new ListViewItem(new string[] { "Çap", SecilenCap }));
+            listViewBilgiler.Items.Add(new ListViewItem(new string[] { "Nodyum", SecilenNodyum }));
+        }
+
         // 📌 Seçilen bitkiye göre resmi gösteren fonksiyon
         private void ShowBitkiImage(string bitkiAdi)
         {
-            string resimYolu = "";
+            // Resimlerin bulunduğu klasör
+            string resimKlasoru = Path.Combine(Application.StartupPath, "resimler");
 
-            // 📌 Bitki adına göre uygun resmi belirle
-            switch (bitkiAdi)
-            {
-                case "Ankyropetalum arsusianum":
-                    resimYolu = "C:\\Users\\HP\\Desktop\\Ankyropetalum arsusianum.png"; // Gerçek yolu gir
-                    break;
-                case "Ankyropetalum reuteri":
-                    resimYolu = "C:\\Users\\HP\\Desktop\\Ankyropetalum reuteri.png";
-                    break;
-                case "Ankyropetalum gypsophiloides":
-                    resimYolu = "C:\\Users\\HP\\Desktop\\Ankyropetalum gypsophiloides.png";
-                    break;
-                default:
-                    resimYolu = "C:\\Resimler\\varsayilan.jpg"; // Bilinmeyen bitki için varsayılan resim
-                    break;
-            }
+            // Resim dosyasının yolunu oluştur
+            string resimYolu = Path.Combine(resimKlasoru, $"{bitkiAdi}.png");
 
-            // 📌 Resmi yükle
-            if (System.IO.File.Exists(resimYolu)) // Dosya var mı kontrol et
+            Console.WriteLine($"Kontrol edilen resim yolu: {resimYolu}");
+
+            if (File.Exists(resimYolu))
             {
-                pictureBoxBitki.Image = Image.FromFile(resimYolu);
+                try
+                {
+                    // Resmi yükle
+                    using (var tempImage = Image.FromFile(resimYolu))
+                    {
+                        pictureBoxBitki.Image = new Bitmap(tempImage); // PictureBox'a resmi yükle
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Resim yüklenemedi. Hata: {ex.Message}", "Resim Hatası", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
             else
             {
-                MessageBox.Show("Resim bulunamadı!", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show($"Resim bulunamadı! Beklenen Yol:\n{resimYolu}", "Resim Hatası", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
@@ -97,7 +110,7 @@ namespace bitki_analiz_sistemi
             listViewBilgiler.Columns.Clear();
             listViewBilgiler.View = View.Details; // Detay görünümü olsun
             listViewBilgiler.Columns.Add("Özellik", 250);
-            listViewBilgiler.Columns.Add("Değer", 300);
+            listViewBilgiler.Columns.Add("Değer", 300);           
         }
 
        
