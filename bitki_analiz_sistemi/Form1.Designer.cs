@@ -156,7 +156,7 @@
             // comboBoxcap
             // 
             this.comboBoxcap.FormattingEnabled = true;
-            this.comboBoxcap.Location = new System.Drawing.Point(50, 58);
+            this.comboBoxcap.Location = new System.Drawing.Point(50, 56);
             this.comboBoxcap.Name = "comboBoxcap";
             this.comboBoxcap.Size = new System.Drawing.Size(121, 24);
             this.comboBoxcap.TabIndex = 18;

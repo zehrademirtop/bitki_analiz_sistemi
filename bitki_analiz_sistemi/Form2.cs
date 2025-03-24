@@ -2,91 +2,182 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Data.SQLite;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Data.SQLite;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.IO;
+using System.Data.SQLite;
+
 
 namespace bitki_analiz_sistemi
 {
     public partial class Form2 : Form
     {
-        private string bitkiAdi; // 🔹 Bitki adını saklamak için değişken
-        private SQLiteConnection sqliteConn;
-        private string pdfPath;
-        private Dictionary<string, string> users = new Dictionary<string, string>()
+        public string SecilenBitkiAdi { get; set; }
+        public string SecilenYuzey { get; set; }
+        public string SecilenDallanma { get; set; }
+        public string SecilenCap { get; set; }
+        public string SecilenNodyum { get; set; }
+        public string ResimYolu { get; set; } // Burada ResimYolu özelliğini tanımlıyoruz
 
+        public Form2()
         {
-            { "admin", "1234" },
-            { "zehra", "5678" },
-            { "kullanici", "password" }
-        };
-        public Form2(string bitkiAdi)
-        {
+
             InitializeComponent();
-            this.bitkiAdi = bitkiAdi;
         }
-        private void ConnectToDatabase()
+
+        private void btnGiris_Click(object sender, EventArgs e)
         {
-            sqliteConn = new SQLiteConnection("Data Source=bitkiler.db;Version=3;");
-            sqliteConn.Open();
+            string dogruKullaniciAdi = "admin";
+            string dogruSifre = "1234";
+
+            string girilenKullaniciAdi = txtKullaniciAdi.Text.Trim();
+            string girilenSifre = txtSifre.Text.Trim();
+
+            if (girilenKullaniciAdi.Equals(dogruKullaniciAdi, StringComparison.OrdinalIgnoreCase) &&
+                girilenSifre == dogruSifre)
+            {
+                MessageBox.Show("Giriş başarılı!", "Başarılı", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                // ListView'e verileri ekle
+                listViewBilgiler.Items.Add(new ListViewItem(new string[] { "Bitki Adı", SecilenBitkiAdi }));
+                listViewBilgiler.Items.Add(new ListViewItem(new string[] { "Yüzey", SecilenYuzey }));
+                listViewBilgiler.Items.Add(new ListViewItem(new string[] { "Dallanma", SecilenDallanma }));
+                listViewBilgiler.Items.Add(new ListViewItem(new string[] { "Çap", SecilenCap }));
+                listViewBilgiler.Items.Add(new ListViewItem(new string[] { "Nodyum", SecilenNodyum }));
+
+                // Resmi yükle
+                ShowBitkiImage(SecilenBitkiAdi);
+            }
+            else
+            {
+                MessageBox.Show("Hatalı kullanıcı adı veya şifre!", "Giriş Hatası", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                txtSifre.Clear();
+                txtSifre.Focus();
+            }
+        }
+
+        // 📌 Seçilen bitkiye göre resmi gösteren fonksiyon
+        private void ShowBitkiImage(string bitkiAdi)
+        {
+            string resimYolu = "";
+
+            switch (bitkiAdi.ToLower())
+            {
+                case "ankyropetalum arsusianum":
+                    resimYolu = Path.Combine(Application.StartupPath, "resimler", "Ankyropetalum arsusianum.png");
+                    break;
+                case "ankyropetalum reuteri":
+                    resimYolu = Path.Combine(Application.StartupPath, "resimler", "Ankyropetalum reuteri.png");
+                    break;
+                case "ankyropetalum gypsophiloides":
+                    resimYolu = Path.Combine(Application.StartupPath, "resimler", "Ankyropetalum gypsophiloides.png");
+                    break;
+                default:
+                    resimYolu = Path.Combine(Application.StartupPath, "resimler", "default.jpg");
+                    break;
+            }
+
+            MessageBox.Show("Resim Yolu: " + resimYolu);  // Resim yolunu kontrol etmek için
+
+            if (System.IO.File.Exists(resimYolu))
+            {
+                // Resmi yükleyip boyutlandırma
+                Image originalImage = Image.FromFile(resimYolu);
+                int maxWidth = 800;  // Maksimum genişlik
+                int maxHeight = 600; // Maksimum yükseklik
+
+                // Resmin boyutunu kontrol et
+                if (originalImage.Width > maxWidth || originalImage.Height > maxHeight)
+                {
+                    // Oranları koruyarak yeniden boyutlandır
+                    double ratio = Math.Min((double)maxWidth / originalImage.Width, (double)maxHeight / originalImage.Height);
+                    int newWidth = (int)(originalImage.Width * ratio);
+                    int newHeight = (int)(originalImage.Height * ratio);
+
+                    // Yeni boyutta resmi oluştur
+                    Image resizedImage = new Bitmap(originalImage, newWidth, newHeight);
+                    pictureBoxBitki.Image = resizedImage;
+                }
+                else
+                {
+                    pictureBoxBitki.Image = originalImage;
+                }
+            }
+            else
+            {
+                MessageBox.Show("Resim bulunamadı!", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
 
         private void Form2_Load(object sender, EventArgs e)
         {
-            txtSifre.UseSystemPasswordChar = true;
+            // Bitki adı formda gösterilsin
+            labelBitkiAdi.Text = "Bitki Adı: " + SecilenBitkiAdi;
 
+            // Başlangıçta resim yüklenmesin, sadece giriş butonuna basıldığında yüklensin
+            pictureBoxBitki.Image = null;
         }
-
-        private void btngiris_Click(object sender, EventArgs e)
+        private void ListeyiYenile()
         {
-            string kullaniciAdi = txtKullaniciAdi.Text.Trim();
-            string sifre = txtSifre.Text.Trim();
+            listViewBilgiler.Items.Clear();  // ListView'ı temizleyin
 
-            if (kullaniciAdi == "admin" && sifre == "1234") // Sabit kullanıcı adı ve şifre
+            using (SQLiteConnection connection = new SQLiteConnection("Data Source=bitkiler.db;Version=3;"))
             {
-                OpenPdf();
-            }
-            else
-            {
-                MessageBox.Show("Hatalı kullanıcı adı veya şifre!", "Giriş Başarısız", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            string pdfPath = @"C:\Users\demir\Desktop\pdfler\bitki_raporu.pdf";
-            if (File.Exists(pdfPath))
-            {
-                System.Diagnostics.Process.Start(pdfPath);
-            }
-            else
-            {
-                MessageBox.Show("PDF dosyası bulunamadı! Lütfen dosyanın doğru konumda olduğundan emin olun.", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+                connection.Open();
+                string query = "SELECT * FROM Bitkiler";
 
-        }
-
-
-        private void OpenPdf()
-        {
-            string pdfPath = $@"C:\Users\demir\Desktop\{bitkiAdi}.pdf"; // Seçilen bitkinin PDF dosyasını belirler
-
-            if (File.Exists(pdfPath))
-            {
-                System.Diagnostics.Process.Start(pdfPath);
-            }
-            else
-            {
-                MessageBox.Show($"{bitkiAdi} için PDF bulunamadı! Lütfen dosyanın doğru konumda olduğunu kontrol edin.", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                using (SQLiteCommand cmd = new SQLiteCommand(query, connection))
+                using (SQLiteDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        ListViewItem item = new ListViewItem(reader["BitkiAdi"].ToString());
+                        listViewBilgiler.Items.Add(item);
+                    }
+                }
             }
         }
 
+       
+        
 
-        private void KullanıcıAdı_Click(object sender, EventArgs e)
+        // ListView'tan seçilen öğeyi almak ve TextBox'lara yerleştirmek
+
+        List<string> bitkiler = new List<string> {
+            "Ankyropetalum arsusianum",
+           "Ankyropetalum reuteri",
+            "Ankyropetalum gypsophiloides"
+              };
+        private void btnSil_Click(object sender, EventArgs e)
         {
+            // Seçili öğeyi almak
+            if (listViewBilgiler.SelectedItems.Count > 0)
+            {
+                // Seçili öğeyi alıyoruz
+                string seciliBitki = listViewBilgiler.SelectedItems[0].Text;
+
+                // Veritabanı veya koleksiyon üzerinden silme işlemi (örneğin koleksiyon üzerinden)
+                bitkiler.Remove(seciliBitki);
+
+                // ListView'den öğeyi kaldırma
+                listViewBilgiler.Items.Remove(listViewBilgiler.SelectedItems[0]);
+
+                // ListView'ı güncelleme
+                MessageBox.Show($"{seciliBitki} başarıyla silindi!", "Silme İşlemi", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                MessageBox.Show("Lütfen silmek için bir bitki seçin.", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
 
         }
     }
-}
+
+
+    }
+
