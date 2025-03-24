@@ -35,7 +35,7 @@ namespace bitki_analiz_sistemi
             comboBoxDurus.Items.AddRange(new string[] { "boş" });
             comboBoxRenk.Items.AddRange(new string[] { "boş" });
 
-            string masaustuYolu = @"C:\Users\HP\Desktop\images.jpg"; // Resmin yolu
+            string masaustuYolu = @"C:\Users\HP\Desktop\resim2.jpg"; // Resmin yolu
             if (File.Exists(masaustuYolu))
             {
                 pictureBoxLogo.Image = Image.FromFile(masaustuYolu);
