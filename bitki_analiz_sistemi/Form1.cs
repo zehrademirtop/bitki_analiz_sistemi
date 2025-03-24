@@ -129,7 +129,7 @@ namespace bitki_analiz_sistemi
                     {
                         reader.Read();
                         string bitkiAdi = reader["BitkiAdi"].ToString();
-                        TürAdı.Text = "Bulunan Bitki: " + bitkiAdi;
+                        TürAdı.Text = "" + bitkiAdi;
                     }
                     else
                     {

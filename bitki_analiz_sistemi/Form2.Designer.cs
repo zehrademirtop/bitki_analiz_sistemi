@@ -38,6 +38,8 @@
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.pictureBoxBitki = new System.Windows.Forms.PictureBox();
+            this.btnPdfOlustur = new System.Windows.Forms.Button();
+            this.btnPdfGoster = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxBitki)).BeginInit();
             this.SuspendLayout();
             // 
@@ -131,11 +133,33 @@
             this.pictureBoxBitki.TabIndex = 7;
             this.pictureBoxBitki.TabStop = false;
             // 
+            // btnPdfOlustur
+            // 
+            this.btnPdfOlustur.Location = new System.Drawing.Point(3, 273);
+            this.btnPdfOlustur.Name = "btnPdfOlustur";
+            this.btnPdfOlustur.Size = new System.Drawing.Size(130, 23);
+            this.btnPdfOlustur.TabIndex = 8;
+            this.btnPdfOlustur.Text = "btnPdfOlustur";
+            this.btnPdfOlustur.UseVisualStyleBackColor = true;
+            this.btnPdfOlustur.Click += new System.EventHandler(this.btnPdfOlustur_Click);
+            // 
+            // btnPdfGoster
+            // 
+            this.btnPdfGoster.Location = new System.Drawing.Point(3, 302);
+            this.btnPdfGoster.Name = "btnPdfGoster";
+            this.btnPdfGoster.Size = new System.Drawing.Size(130, 27);
+            this.btnPdfGoster.TabIndex = 9;
+            this.btnPdfGoster.Text = "btnPdfGoster";
+            this.btnPdfGoster.UseVisualStyleBackColor = true;
+            this.btnPdfGoster.Click += new System.EventHandler(this.btnPdfGoster_Click);
+            // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1023, 542);
+            this.Controls.Add(this.btnPdfGoster);
+            this.Controls.Add(this.btnPdfOlustur);
             this.Controls.Add(this.pictureBoxBitki);
             this.Controls.Add(this.listViewBilgiler);
             this.Controls.Add(this.btnGiris);
@@ -165,5 +189,7 @@
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.PictureBox pictureBoxBitki;
+        private System.Windows.Forms.Button btnPdfOlustur;
+        private System.Windows.Forms.Button btnPdfGoster;
     }
 }
