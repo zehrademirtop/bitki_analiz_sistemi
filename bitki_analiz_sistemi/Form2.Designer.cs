@@ -41,6 +41,8 @@
             this.btnSil = new System.Windows.Forms.Button();
             this.btnGuncelle = new System.Windows.Forms.Button();
             this.txtYeniBitkiAdi = new System.Windows.Forms.TextBox();
+            this.labelBitkiAdi = new System.Windows.Forms.Label();
+            this.btnPdfOlustur = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxBitki)).BeginInit();
             this.SuspendLayout();
             // 
@@ -136,7 +138,7 @@
             // 
             // btnSil
             // 
-            this.btnSil.Location = new System.Drawing.Point(289, 257);
+            this.btnSil.Location = new System.Drawing.Point(15, 339);
             this.btnSil.Name = "btnSil";
             this.btnSil.Size = new System.Drawing.Size(75, 23);
             this.btnSil.TabIndex = 10;
@@ -146,7 +148,7 @@
             // 
             // btnGuncelle
             // 
-            this.btnGuncelle.Location = new System.Drawing.Point(289, 314);
+            this.btnGuncelle.Location = new System.Drawing.Point(12, 368);
             this.btnGuncelle.Name = "btnGuncelle";
             this.btnGuncelle.Size = new System.Drawing.Size(75, 23);
             this.btnGuncelle.TabIndex = 11;
@@ -155,17 +157,38 @@
             // 
             // txtYeniBitkiAdi
             // 
-            this.txtYeniBitkiAdi.Location = new System.Drawing.Point(12, 314);
+            this.txtYeniBitkiAdi.Location = new System.Drawing.Point(-1, 418);
             this.txtYeniBitkiAdi.Multiline = true;
             this.txtYeniBitkiAdi.Name = "txtYeniBitkiAdi";
-            this.txtYeniBitkiAdi.Size = new System.Drawing.Size(223, 146);
+            this.txtYeniBitkiAdi.Size = new System.Drawing.Size(160, 92);
             this.txtYeniBitkiAdi.TabIndex = 12;
+            // 
+            // labelBitkiAdi
+            // 
+            this.labelBitkiAdi.AutoSize = true;
+            this.labelBitkiAdi.Location = new System.Drawing.Point(12, 153);
+            this.labelBitkiAdi.Name = "labelBitkiAdi";
+            this.labelBitkiAdi.Size = new System.Drawing.Size(44, 16);
+            this.labelBitkiAdi.TabIndex = 13;
+            this.labelBitkiAdi.Text = "label4";
+            // 
+            // btnPdfOlustur
+            // 
+            this.btnPdfOlustur.Location = new System.Drawing.Point(275, 274);
+            this.btnPdfOlustur.Name = "btnPdfOlustur";
+            this.btnPdfOlustur.Size = new System.Drawing.Size(75, 23);
+            this.btnPdfOlustur.TabIndex = 14;
+            this.btnPdfOlustur.Text = "button1";
+            this.btnPdfOlustur.UseVisualStyleBackColor = true;
+            this.btnPdfOlustur.Click += new System.EventHandler(this.btnPdfOlustur_Click);
             // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1023, 542);
+            this.Controls.Add(this.btnPdfOlustur);
+            this.Controls.Add(this.labelBitkiAdi);
             this.Controls.Add(this.txtYeniBitkiAdi);
             this.Controls.Add(this.btnGuncelle);
             this.Controls.Add(this.btnSil);
@@ -201,5 +224,7 @@
         private System.Windows.Forms.Button btnSil;
         private System.Windows.Forms.Button btnGuncelle;
         private System.Windows.Forms.TextBox txtYeniBitkiAdi;
+        private System.Windows.Forms.Label labelBitkiAdi;
+        private System.Windows.Forms.Button btnPdfOlustur;
     }
 }

@@ -52,6 +52,7 @@
             this.TürAra = new System.Windows.Forms.Button();
             this.TürAdı = new System.Windows.Forms.Label();
             this.Bilgiver = new System.Windows.Forms.Button();
+            this.labelHavaDurumu = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
@@ -70,7 +71,7 @@
             this.label2.AutoSize = true;
             this.label2.BackColor = System.Drawing.Color.YellowGreen;
             this.label2.ForeColor = System.Drawing.Color.Maroon;
-            this.label2.Location = new System.Drawing.Point(12, 64);
+            this.label2.Location = new System.Drawing.Point(12, 92);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(32, 16);
             this.label2.TabIndex = 2;
@@ -81,7 +82,7 @@
             this.label3.AutoSize = true;
             this.label3.BackColor = System.Drawing.Color.YellowGreen;
             this.label3.ForeColor = System.Drawing.Color.Maroon;
-            this.label3.Location = new System.Drawing.Point(200, 64);
+            this.label3.Location = new System.Drawing.Point(200, 92);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(79, 16);
             this.label3.TabIndex = 3;
@@ -92,7 +93,7 @@
             this.label4.AutoSize = true;
             this.label4.BackColor = System.Drawing.Color.YellowGreen;
             this.label4.ForeColor = System.Drawing.Color.Maroon;
-            this.label4.Location = new System.Drawing.Point(464, 64);
+            this.label4.Location = new System.Drawing.Point(464, 95);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(42, 16);
             this.label4.TabIndex = 4;
@@ -103,7 +104,7 @@
             this.label5.AutoSize = true;
             this.label5.BackColor = System.Drawing.Color.YellowGreen;
             this.label5.ForeColor = System.Drawing.Color.Maroon;
-            this.label5.Location = new System.Drawing.Point(682, 64);
+            this.label5.Location = new System.Drawing.Point(672, 95);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(44, 16);
             this.label5.TabIndex = 5;
@@ -114,7 +115,7 @@
             this.label6.AutoSize = true;
             this.label6.BackColor = System.Drawing.Color.YellowGreen;
             this.label6.ForeColor = System.Drawing.Color.Maroon;
-            this.label6.Location = new System.Drawing.Point(5, 131);
+            this.label6.Location = new System.Drawing.Point(5, 164);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(39, 16);
             this.label6.TabIndex = 6;
@@ -125,7 +126,7 @@
             this.label7.AutoSize = true;
             this.label7.BackColor = System.Drawing.Color.YellowGreen;
             this.label7.ForeColor = System.Drawing.Color.Maroon;
-            this.label7.Location = new System.Drawing.Point(200, 131);
+            this.label7.Location = new System.Drawing.Point(200, 159);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(65, 16);
             this.label7.TabIndex = 15;
@@ -136,7 +137,7 @@
             this.label8.AutoSize = true;
             this.label8.BackColor = System.Drawing.Color.YellowGreen;
             this.label8.ForeColor = System.Drawing.Color.Maroon;
-            this.label8.Location = new System.Drawing.Point(448, 138);
+            this.label8.Location = new System.Drawing.Point(448, 159);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(58, 16);
             this.label8.TabIndex = 16;
@@ -147,7 +148,7 @@
             this.label9.AutoSize = true;
             this.label9.BackColor = System.Drawing.Color.YellowGreen;
             this.label9.ForeColor = System.Drawing.Color.Maroon;
-            this.label9.Location = new System.Drawing.Point(672, 138);
+            this.label9.Location = new System.Drawing.Point(672, 156);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(54, 16);
             this.label9.TabIndex = 17;
@@ -156,7 +157,7 @@
             // comboBoxcap
             // 
             this.comboBoxcap.FormattingEnabled = true;
-            this.comboBoxcap.Location = new System.Drawing.Point(50, 56);
+            this.comboBoxcap.Location = new System.Drawing.Point(50, 89);
             this.comboBoxcap.Name = "comboBoxcap";
             this.comboBoxcap.Size = new System.Drawing.Size(121, 24);
             this.comboBoxcap.TabIndex = 18;
@@ -164,7 +165,7 @@
             // comboBoxTuyDurumu
             // 
             this.comboBoxTuyDurumu.FormattingEnabled = true;
-            this.comboBoxTuyDurumu.Location = new System.Drawing.Point(285, 61);
+            this.comboBoxTuyDurumu.Location = new System.Drawing.Point(285, 92);
             this.comboBoxTuyDurumu.Name = "comboBoxTuyDurumu";
             this.comboBoxTuyDurumu.Size = new System.Drawing.Size(121, 24);
             this.comboBoxTuyDurumu.TabIndex = 19;
@@ -172,7 +173,7 @@
             // comboBoxDurus
             // 
             this.comboBoxDurus.FormattingEnabled = true;
-            this.comboBoxDurus.Location = new System.Drawing.Point(512, 61);
+            this.comboBoxDurus.Location = new System.Drawing.Point(512, 92);
             this.comboBoxDurus.Name = "comboBoxDurus";
             this.comboBoxDurus.Size = new System.Drawing.Size(121, 24);
             this.comboBoxDurus.TabIndex = 20;
@@ -180,7 +181,7 @@
             // comboBoxYuzey
             // 
             this.comboBoxYuzey.FormattingEnabled = true;
-            this.comboBoxYuzey.Location = new System.Drawing.Point(732, 64);
+            this.comboBoxYuzey.Location = new System.Drawing.Point(732, 95);
             this.comboBoxYuzey.Name = "comboBoxYuzey";
             this.comboBoxYuzey.Size = new System.Drawing.Size(121, 24);
             this.comboBoxYuzey.TabIndex = 21;
@@ -188,7 +189,7 @@
             // comboBoxRenk
             // 
             this.comboBoxRenk.FormattingEnabled = true;
-            this.comboBoxRenk.Location = new System.Drawing.Point(50, 123);
+            this.comboBoxRenk.Location = new System.Drawing.Point(50, 161);
             this.comboBoxRenk.Name = "comboBoxRenk";
             this.comboBoxRenk.Size = new System.Drawing.Size(121, 24);
             this.comboBoxRenk.TabIndex = 22;
@@ -196,7 +197,7 @@
             // comboBoxDallanma
             // 
             this.comboBoxDallanma.FormattingEnabled = true;
-            this.comboBoxDallanma.Location = new System.Drawing.Point(285, 128);
+            this.comboBoxDallanma.Location = new System.Drawing.Point(285, 156);
             this.comboBoxDallanma.Name = "comboBoxDallanma";
             this.comboBoxDallanma.Size = new System.Drawing.Size(121, 24);
             this.comboBoxDallanma.TabIndex = 23;
@@ -204,7 +205,7 @@
             // comboBoxNodyum
             // 
             this.comboBoxNodyum.FormattingEnabled = true;
-            this.comboBoxNodyum.Location = new System.Drawing.Point(512, 130);
+            this.comboBoxNodyum.Location = new System.Drawing.Point(512, 151);
             this.comboBoxNodyum.Name = "comboBoxNodyum";
             this.comboBoxNodyum.Size = new System.Drawing.Size(121, 24);
             this.comboBoxNodyum.TabIndex = 24;
@@ -212,7 +213,7 @@
             // comboBoxUzunluk
             // 
             this.comboBoxUzunluk.FormattingEnabled = true;
-            this.comboBoxUzunluk.Location = new System.Drawing.Point(732, 128);
+            this.comboBoxUzunluk.Location = new System.Drawing.Point(732, 151);
             this.comboBoxUzunluk.Name = "comboBoxUzunluk";
             this.comboBoxUzunluk.Size = new System.Drawing.Size(121, 24);
             this.comboBoxUzunluk.TabIndex = 25;
@@ -289,12 +290,22 @@
             this.Bilgiver.UseVisualStyleBackColor = false;
             this.Bilgiver.Click += new System.EventHandler(this.Bilgiver_Click);
             // 
+            // labelHavaDurumu
+            // 
+            this.labelHavaDurumu.AutoSize = true;
+            this.labelHavaDurumu.Location = new System.Drawing.Point(21, 9);
+            this.labelHavaDurumu.Name = "labelHavaDurumu";
+            this.labelHavaDurumu.Size = new System.Drawing.Size(51, 16);
+            this.labelHavaDurumu.TabIndex = 33;
+            this.labelHavaDurumu.Text = "label10";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Tan;
             this.ClientSize = new System.Drawing.Size(865, 486);
+            this.Controls.Add(this.labelHavaDurumu);
             this.Controls.Add(this.Bilgiver);
             this.Controls.Add(this.TürAdı);
             this.Controls.Add(this.TürAra);
@@ -352,6 +363,7 @@
         private System.Windows.Forms.Button TürAra;
         private System.Windows.Forms.Label TürAdı;
         private System.Windows.Forms.Button Bilgiver;
+        private System.Windows.Forms.Label labelHavaDurumu;
     }
 }
 

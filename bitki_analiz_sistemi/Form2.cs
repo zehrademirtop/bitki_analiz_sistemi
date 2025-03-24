@@ -10,18 +10,23 @@ using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.IO;
 using System.Data.SQLite;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
+using iTextSharp.text.pdf.codec;
 
 
 namespace bitki_analiz_sistemi
+    
 {
     public partial class Form2 : Form
+
     {
         public string SecilenBitkiAdi { get; set; }
         public string SecilenYuzey { get; set; }
         public string SecilenDallanma { get; set; }
         public string SecilenCap { get; set; }
         public string SecilenNodyum { get; set; }
-        public string ResimYolu { get; set; } // Burada ResimYolu özelliğini tanımlıyoruz
+        // ResimYolu özelliği kaldırıldı
 
         public Form2()
         {
@@ -42,15 +47,12 @@ namespace bitki_analiz_sistemi
             {
                 MessageBox.Show("Giriş başarılı!", "Başarılı", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                // ListView'e verileri ekle
+                // ListView'e verileri ekliyoruz
                 listViewBilgiler.Items.Add(new ListViewItem(new string[] { "Bitki Adı", SecilenBitkiAdi }));
                 listViewBilgiler.Items.Add(new ListViewItem(new string[] { "Yüzey", SecilenYuzey }));
                 listViewBilgiler.Items.Add(new ListViewItem(new string[] { "Dallanma", SecilenDallanma }));
                 listViewBilgiler.Items.Add(new ListViewItem(new string[] { "Çap", SecilenCap }));
                 listViewBilgiler.Items.Add(new ListViewItem(new string[] { "Nodyum", SecilenNodyum }));
-
-                // Resmi yükle
-                ShowBitkiImage(SecilenBitkiAdi);
             }
             else
             {
@@ -60,7 +62,7 @@ namespace bitki_analiz_sistemi
             }
         }
 
-        // 📌 Seçilen bitkiye göre resmi gösteren fonksiyon
+         // Seçilen bitkiye göre resmi gösteren fonksiyon
         private void ShowBitkiImage(string bitkiAdi)
         {
             string resimYolu = "";
@@ -69,6 +71,7 @@ namespace bitki_analiz_sistemi
             {
                 case "ankyropetalum arsusianum":
                     resimYolu = Path.Combine(Application.StartupPath, "resimler", "Ankyropetalum arsusianum.png");
+
                     break;
                 case "ankyropetalum reuteri":
                     resimYolu = Path.Combine(Application.StartupPath, "resimler", "Ankyropetalum reuteri.png");
@@ -76,9 +79,7 @@ namespace bitki_analiz_sistemi
                 case "ankyropetalum gypsophiloides":
                     resimYolu = Path.Combine(Application.StartupPath, "resimler", "Ankyropetalum gypsophiloides.png");
                     break;
-                default:
-                    resimYolu = Path.Combine(Application.StartupPath, "resimler", "default.jpg");
-                    break;
+
             }
 
             MessageBox.Show("Resim Yolu: " + resimYolu);  // Resim yolunu kontrol etmek için
@@ -86,7 +87,7 @@ namespace bitki_analiz_sistemi
             if (System.IO.File.Exists(resimYolu))
             {
                 // Resmi yükleyip boyutlandırma
-                Image originalImage = Image.FromFile(resimYolu);
+                System.Drawing.Image originalImage = System.Drawing.Image.FromFile(resimYolu);
                 int maxWidth = 800;  // Maksimum genişlik
                 int maxHeight = 600; // Maksimum yükseklik
 
@@ -99,7 +100,7 @@ namespace bitki_analiz_sistemi
                     int newHeight = (int)(originalImage.Height * ratio);
 
                     // Yeni boyutta resmi oluştur
-                    Image resizedImage = new Bitmap(originalImage, newWidth, newHeight);
+                    System.Drawing.Image resizedImage = new Bitmap(originalImage, newWidth, newHeight);
                     pictureBoxBitki.Image = resizedImage;
                 }
                 else
@@ -116,43 +117,11 @@ namespace bitki_analiz_sistemi
 
         private void Form2_Load(object sender, EventArgs e)
         {
+           
             // Bitki adı formda gösterilsin
-            labelBitkiAdi.Text = "Bitki Adı: " + SecilenBitkiAdi;
 
-            // Başlangıçta resim yüklenmesin, sadece giriş butonuna basıldığında yüklensin
-            pictureBoxBitki.Image = null;
-        }
-        private void ListeyiYenile()
-        {
-            listViewBilgiler.Items.Clear();  // ListView'ı temizleyin
-
-            using (SQLiteConnection connection = new SQLiteConnection("Data Source=bitkiler.db;Version=3;"))
-            {
-                connection.Open();
-                string query = "SELECT * FROM Bitkiler";
-
-                using (SQLiteCommand cmd = new SQLiteCommand(query, connection))
-                using (SQLiteDataReader reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        ListViewItem item = new ListViewItem(reader["BitkiAdi"].ToString());
-                        listViewBilgiler.Items.Add(item);
-                    }
-                }
-            }
         }
 
-       
-        
-
-        // ListView'tan seçilen öğeyi almak ve TextBox'lara yerleştirmek
-
-        List<string> bitkiler = new List<string> {
-            "Ankyropetalum arsusianum",
-           "Ankyropetalum reuteri",
-            "Ankyropetalum gypsophiloides"
-              };
         private void btnSil_Click(object sender, EventArgs e)
         {
             // Seçili öğeyi almak
@@ -162,7 +131,7 @@ namespace bitki_analiz_sistemi
                 string seciliBitki = listViewBilgiler.SelectedItems[0].Text;
 
                 // Veritabanı veya koleksiyon üzerinden silme işlemi (örneğin koleksiyon üzerinden)
-                bitkiler.Remove(seciliBitki);
+                List<string> bitkiler = new List<string>();
 
                 // ListView'den öğeyi kaldırma
                 listViewBilgiler.Items.Remove(listViewBilgiler.SelectedItems[0]);
@@ -174,10 +143,54 @@ namespace bitki_analiz_sistemi
             {
                 MessageBox.Show("Lütfen silmek için bir bitki seçin.", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
-
         }
+
+        private void btnPdfOlustur_Click(object sender, EventArgs e)
+        {
+            // PDF dosyasının oluşturulacağı yol
+            string pdfFilePath = @"C:\Users\demir\Desktop\bitki_analiz_sistemi\bitki_listesi.pdf";
+
+            // Document ve PdfWriter nesneleri oluşturuluyor
+            Document doc = new Document();
+            PdfWriter.GetInstance(doc, new FileStream(pdfFilePath, FileMode.Create));
+
+            // Belgeyi açıyoruz
+            doc.Open();
+
+            // ListView'deki bilgileri ekliyoruz
+            foreach (ListViewItem item in listViewBilgiler.Items)
+            {
+                // ListView'den her satırı alıyoruz
+                string itemText = string.Join(", ", item.SubItems);
+                doc.Add(new Paragraph(itemText)); // Her satırı PDF'ye ekliyoruz
+            }
+
+            // Belgeyi kapatıyoruz
+            doc.Close();
+
+            // Kullanıcıya PDF'in oluşturulduğunu bildiren bir mesaj
+            MessageBox.Show("PDF başarıyla oluşturuldu!");
+        }
+
+
+
+
+
+
+        // ListView'tan seçilen öğeyi almak ve TextBox'lara yerleştirmek
+
+
+    };
+       
+      
+
+     
+
+     
     }
 
 
-    }
+
+
+    
 
