@@ -4,28 +4,35 @@ using System.ComponentModel;
 using System.Data;
 using System.Data.SQLite;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
+using System.IO;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
+using System.Net.Http;
+using Newtonsoft.Json;
 namespace bitki_analiz_sistemi
 {
     public partial class Form1 : Form
     {
+        private string apiKey = "b205766cf4a248458c2210504252403"; // WeatherAPI API Key
+        private string cityName = "Iğdır";  // Hava durumu bilgisini almak istediğiniz şehir
 
         // SQLite bağlantı dizesi
         private string connectionString = @"Data Source=C:\Users\HP\Desktop\Bitkiler.db;Version=3;";
+
+
 
         public Form1()
         {
             InitializeComponent();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private async void Form1_Load(object sender, EventArgs e)
         {
-            // ComboBox öğelerini eklemek
+            await GetWeatherData(cityName);
             comboBoxcap.Items.AddRange(new string[] { "boş", "1-3 mm", "2,5-5 mm" });
             comboBoxTuyDurumu.Items.AddRange(new string[] { "boş", "Tüylü", "Tüysüz" });
             comboBoxYuzey.Items.AddRange(new string[] { "boş", "Tüylü", "Seyrek Tüylü", "Salgı Tüylü" });
@@ -34,38 +41,71 @@ namespace bitki_analiz_sistemi
             comboBoxUzunluk.Items.AddRange(new string[] { "boş" });
             comboBoxDurus.Items.AddRange(new string[] { "boş" });
             comboBoxRenk.Items.AddRange(new string[] { "boş" });
+        }
+        // Hava durumu verisini almak için API'yi çağırıyoruz
+        private async Task GetWeatherData(string city)
+        {
+            string url = $"https://api.weatherapi.com/v1/current.json?key={apiKey}&q={city}&lang=tr"; // WeatherAPI url
 
-            string masaustuYolu = @"C:\Users\HP\Desktop\resim2.jpg"; // Resmin yolu
-            if (File.Exists(masaustuYolu))
+            using (HttpClient client = new HttpClient())
             {
-                pictureBoxLogo.Image = Image.FromFile(masaustuYolu);
-                pictureBoxLogo.SizeMode = PictureBoxSizeMode.Zoom; // Resmi orantılı şekilde sığdır
+                try
+                {
+                    // API'den veri alıyoruz
+                    HttpResponseMessage response = await client.GetAsync(url);
+                    response.EnsureSuccessStatusCode();  // Başarılı bir yanıt almazsak hata verecek
+                    string responseData = await response.Content.ReadAsStringAsync();
+
+                    // JSON formatında gelen veriyi parse ediyoruz
+                    var weatherData = JsonConvert.DeserializeObject<WeatherResponse>(responseData);
+
+                    // Hava durumu bilgilerini formda gösteriyoruz
+                    labelHavaDurumu.Text = $"Şehir: {weatherData.Location.Name}\n" +
+                                           $"Sıcaklık: {weatherData.Current.TempC}°C\n" +
+                                           $"Durum: {weatherData.Current.Condition.Text}\n" +
+                                           $"Rüzgar: {weatherData.Current.WindKph} km/h";
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Hava durumu verisi alınırken bir hata oluştu: {ex.Message}");
+                }
             }
-            else
-            {
-                MessageBox.Show("Resim dosyası bulunamadı!", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+        }
+        // API'den gelen veriyi deserialize edebilmek için sınıf oluşturuyoruz
+        public class WeatherResponse
+        {
+            public Location Location { get; set; }
+            public CurrentWeather Current { get; set; }
+        }
+        public class Location
+        {
+            public string Name { get; set; }
+        }
+
+        public class CurrentWeather
+        {
+            public double TempC { get; set; }
+            public Condition Condition { get; set; }
+            public double WindKph { get; set; }
+        }
+        public class Condition
+        {
+            public string Text { get; set; }
         }
 
         private void Bilgiver_Click(object sender, EventArgs e)
         {
+
             Form2 form2 = new Form2();
 
             // Seçilen bilgileri Form2'ye aktarıyoruz
-            form2.SecilenBitkiAdi = TürAdı.Text;  // Bu verinin doğru aktarıldığından emin olun
+            form2.SecilenBitkiAdi = TürAdı.Text;
             form2.SecilenYuzey = comboBoxYuzey.Text;
             form2.SecilenDallanma = comboBoxDallanma.Text;
             form2.SecilenCap = comboBoxcap.Text;
             form2.SecilenNodyum = comboBoxNodyum.Text;
 
-            // Verilerin doğru şekilde aktarıldığını kontrol et
-            Console.WriteLine("SecilenBitkiAdi: " + form2.SecilenBitkiAdi);
-            Console.WriteLine("SecilenYuzey: " + form2.SecilenYuzey);
-            Console.WriteLine("SecilenDallanma: " + form2.SecilenDallanma);
-            Console.WriteLine("SecilenCap: " + form2.SecilenCap);
-            Console.WriteLine("SecilenNodyum: " + form2.SecilenNodyum);
-
-            // Form2'yi aç ama sadece Show() kullan, ShowDialog() değil
+            // Form2'yi açıyoruz
             form2.Show();
         }
 

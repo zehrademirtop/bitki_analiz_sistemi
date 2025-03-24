@@ -139,7 +139,7 @@
             this.btnPdfOlustur.Name = "btnPdfOlustur";
             this.btnPdfOlustur.Size = new System.Drawing.Size(130, 23);
             this.btnPdfOlustur.TabIndex = 8;
-            this.btnPdfOlustur.Text = "btnPdfOlustur";
+            this.btnPdfOlustur.Text = "PdfOlustur";
             this.btnPdfOlustur.UseVisualStyleBackColor = true;
             this.btnPdfOlustur.Click += new System.EventHandler(this.btnPdfOlustur_Click);
             // 
@@ -149,7 +149,7 @@
             this.btnPdfGoster.Name = "btnPdfGoster";
             this.btnPdfGoster.Size = new System.Drawing.Size(130, 27);
             this.btnPdfGoster.TabIndex = 9;
-            this.btnPdfGoster.Text = "btnPdfGoster";
+            this.btnPdfGoster.Text = "PdfAç";
             this.btnPdfGoster.UseVisualStyleBackColor = true;
             this.btnPdfGoster.Click += new System.EventHandler(this.btnPdfGoster_Click);
             // 
