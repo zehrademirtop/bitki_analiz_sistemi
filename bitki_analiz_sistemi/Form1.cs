@@ -112,20 +112,44 @@ namespace bitki_analiz_sistemi
 
         private void TürAra_Click(object sender, EventArgs e)
         {
+            // Kullanıcı tarafından seçilen combobox değerlerini güvenli şekilde alıyoruz
             string cap = comboBoxcap.SelectedItem?.ToString() ?? "";
             string TuyDurumu = comboBoxTuyDurumu.SelectedItem?.ToString() ?? "";
             string Yuzey = comboBoxYuzey.SelectedItem?.ToString() ?? "";
             string Dallanma = comboBoxDallanma.SelectedItem?.ToString() ?? "";
             string Nodyum = comboBoxNodyum.SelectedItem?.ToString() ?? "";
 
+            // Eğer "Yüzey" combobox'ı "Tüysüz" veya "Seyrek Tüylü" seçilmişse direkt sonucu verelim
+            if (Yuzey == "Tüylü" || Yuzey == "Seyrek Tüylü")
+            {
+                TürAdı.Text = "Bulunan Bitki: Ankyropetalum arsusianum";
+                return;
+            }
+
+            // Eğer "Tabanda Sık" Dallanma veya "1-3 mm" Cap ve "İnternodlar Kısa" Nodyum seçilirse, "Ankyropetalum reuteri" bulunmalı
+            if (Dallanma == "Tabanda Sık" && cap == "1-3 mm" && Nodyum == "İnternodlar Kısa")
+            {
+                TürAdı.Text = "Bulunan Bitki: Ankyropetalum reuteri";
+                return;
+            }
+
+            // Eğer "Tabanda Birkaç" Dallanma veya "2,5-5 mm" Cap ve "İnternodlar Belirgin" Nodyum seçilirse, "Ankyropetalum gypsophiloides" bulunmalı
+            if (Dallanma == "Tabanda Birkaç" && cap == "2,5-5 mm" && Nodyum == "İnternodlar Belirgin")
+            {
+                TürAdı.Text = "Bulunan Bitki: Ankyropetalum gypsophiloides";
+                return;
+            }
+
+            // Eğer seçim yapılmadan "Boş" gibi özel seçenekler seçildiyse, bunları SQL'de yokmuş gibi ele alalım
             using (SQLiteConnection connection = new SQLiteConnection(connectionString))
             {
                 try
                 {
                     connection.Open();
 
-                    // Esnek SQL sorgusu oluşturuyoruz
+                    // Esnek bir SQL sorgusu oluşturuyoruz, boş bırakılan combobox'ları dikkate almıyoruz
                     string query = "SELECT * FROM Bitkiler WHERE 1=1";
+
                     if (!string.IsNullOrWhiteSpace(cap)) query += " AND Cap = @cap";
                     if (!string.IsNullOrWhiteSpace(TuyDurumu)) query += " AND TuyDurumu = @TuyDurumu";
                     if (!string.IsNullOrWhiteSpace(Yuzey)) query += " AND Yuzey = @Yuzey";
@@ -146,10 +170,7 @@ namespace bitki_analiz_sistemi
                     {
                         reader.Read();
                         string bitkiAdi = reader["BitkiAdi"].ToString();
-                        // Verileri Form2'ye aktarıyoruz
-                        Form2 form2 = new Form2();
-                        form2.SecilenBitkiAdi = bitkiAdi;
-                        form2.Show();
+                        TürAdı.Text = "" + bitkiAdi;
                     }
                     else
                     {
@@ -158,16 +179,11 @@ namespace bitki_analiz_sistemi
 
                     reader.Close();
                 }
-                catch (SQLiteException ex)
-                {
-                    MessageBox.Show($"SQLite Hatası: {ex.Message}", "Veritabanı Bağlantı Hatası", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Genel Hata: {ex.Message}", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"Bir hata oluştu: {ex.Message}");
                 }
             }
-
         }
     }
 }

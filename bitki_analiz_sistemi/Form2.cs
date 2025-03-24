@@ -147,29 +147,49 @@ namespace bitki_analiz_sistemi
 
         private void btnPdfOlustur_Click(object sender, EventArgs e)
         {
-            // PDF dosyasının oluşturulacağı yol
-            string pdfFilePath = @"C:\Users\demir\Desktop\bitki_analiz_sistemi\bitki_listesi.pdf";
-
-            // Document ve PdfWriter nesneleri oluşturuluyor
-            Document doc = new Document();
-            PdfWriter.GetInstance(doc, new FileStream(pdfFilePath, FileMode.Create));
-
-            // Belgeyi açıyoruz
-            doc.Open();
-
-            // ListView'deki bilgileri ekliyoruz
-            foreach (ListViewItem item in listViewBilgiler.Items)
+            try
             {
-                // ListView'den her satırı alıyoruz
-                string itemText = string.Join(", ", item.SubItems);
-                doc.Add(new Paragraph(itemText)); // Her satırı PDF'ye ekliyoruz
+                string pdfYolu = Path.Combine(Application.StartupPath, "BitkiBilgileri.pdf");
+
+                Document doc = new Document();
+                PdfWriter.GetInstance(doc, new FileStream(pdfYolu, FileMode.Create));
+                doc.Open();
+
+                // 📌 iTextSharp'ın Font sınıfını açıkça belirtiyoruz
+                string arialTtf = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Fonts), "arial.ttf");
+                BaseFont arialBaseFont = BaseFont.CreateFont(arialTtf, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+                iTextSharp.text.Font turkceFont = new iTextSharp.text.Font(arialBaseFont, 12, iTextSharp.text.Font.NORMAL);
+
+                doc.Add(new Paragraph("Bitki Bilgileri\n", turkceFont));
+                doc.Add(new Paragraph("----------------------------------------\n", turkceFont));
+
+                foreach (ListViewItem item in listViewBilgiler.Items)
+                {
+                    string satir = $"{item.SubItems[0].Text}: {item.SubItems[1].Text}";
+                    doc.Add(new Paragraph(satir, turkceFont));
+                }
+
+                doc.Close();
+                MessageBox.Show("PDF başarıyla oluşturuldu!", "Başarılı", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show("PDF oluşturulurken hata oluştu: " + ex.Message, "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
 
-            // Belgeyi kapatıyoruz
-            doc.Close();
+        private void btnPdfgoster_Click(object sender, EventArgs e)
+        {
+            string pdfYolu = Path.Combine(Application.StartupPath, "BitkiBilgileri.pdf");
 
-            // Kullanıcıya PDF'in oluşturulduğunu bildiren bir mesaj
-            MessageBox.Show("PDF başarıyla oluşturuldu!");
+            if (File.Exists(pdfYolu))
+            {
+                System.Diagnostics.Process.Start(pdfYolu);
+            }
+            else
+            {
+                MessageBox.Show("Önce PDF oluşturmalısınız!", "Dosya Bulunamadı", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
 

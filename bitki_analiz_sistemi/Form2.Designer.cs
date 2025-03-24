@@ -43,6 +43,7 @@
             this.txtYeniBitkiAdi = new System.Windows.Forms.TextBox();
             this.labelBitkiAdi = new System.Windows.Forms.Label();
             this.btnPdfOlustur = new System.Windows.Forms.Button();
+            this.btnPdfGoster = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxBitki)).BeginInit();
             this.SuspendLayout();
             // 
@@ -182,11 +183,22 @@
             this.btnPdfOlustur.UseVisualStyleBackColor = true;
             this.btnPdfOlustur.Click += new System.EventHandler(this.btnPdfOlustur_Click);
             // 
+            // btnPdfGoster
+            // 
+            this.btnPdfGoster.Location = new System.Drawing.Point(275, 320);
+            this.btnPdfGoster.Name = "btnPdfGoster";
+            this.btnPdfGoster.Size = new System.Drawing.Size(75, 23);
+            this.btnPdfGoster.TabIndex = 15;
+            this.btnPdfGoster.Text = "button1";
+            this.btnPdfGoster.UseVisualStyleBackColor = true;
+            this.btnPdfGoster.Click += new System.EventHandler(this.btnPdfgoster_Click);
+            // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1023, 542);
+            this.Controls.Add(this.btnPdfGoster);
             this.Controls.Add(this.btnPdfOlustur);
             this.Controls.Add(this.labelBitkiAdi);
             this.Controls.Add(this.txtYeniBitkiAdi);
@@ -226,5 +238,6 @@
         private System.Windows.Forms.TextBox txtYeniBitkiAdi;
         private System.Windows.Forms.Label labelBitkiAdi;
         private System.Windows.Forms.Button btnPdfOlustur;
+        private System.Windows.Forms.Button btnPdfGoster;
     }
 }
