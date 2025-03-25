@@ -100,13 +100,14 @@
             // 
             // listViewBilgiler
             // 
+            this.listViewBilgiler.BackColor = System.Drawing.Color.DarkKhaki;
             this.listViewBilgiler.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2});
             this.listViewBilgiler.FullRowSelect = true;
             this.listViewBilgiler.GridLines = true;
             this.listViewBilgiler.HideSelection = false;
-            this.listViewBilgiler.Location = new System.Drawing.Point(421, 12);
+            this.listViewBilgiler.Location = new System.Drawing.Point(421, 9);
             this.listViewBilgiler.MultiSelect = false;
             this.listViewBilgiler.Name = "listViewBilgiler";
             this.listViewBilgiler.Size = new System.Drawing.Size(590, 518);
@@ -157,6 +158,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.Tan;
             this.ClientSize = new System.Drawing.Size(1023, 542);
             this.Controls.Add(this.btnPdfGoster);
             this.Controls.Add(this.btnPdfOlustur);

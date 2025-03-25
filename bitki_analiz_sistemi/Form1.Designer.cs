@@ -58,7 +58,7 @@
             this.label1.AutoSize = true;
             this.label1.BackColor = System.Drawing.Color.YellowGreen;
             this.label1.ForeColor = System.Drawing.Color.Maroon;
-            this.label1.Location = new System.Drawing.Point(294, 20);
+            this.label1.Location = new System.Drawing.Point(313, 42);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(87, 16);
             this.label1.TabIndex = 1;
@@ -271,7 +271,7 @@
             // labelHavaDurumu
             // 
             this.labelHavaDurumu.AutoSize = true;
-            this.labelHavaDurumu.ForeColor = System.Drawing.Color.White;
+            this.labelHavaDurumu.ForeColor = System.Drawing.Color.ForestGreen;
             this.labelHavaDurumu.Location = new System.Drawing.Point(5, 9);
             this.labelHavaDurumu.Name = "labelHavaDurumu";
             this.labelHavaDurumu.Size = new System.Drawing.Size(86, 16);
