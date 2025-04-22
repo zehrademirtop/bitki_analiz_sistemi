@@ -23,7 +23,7 @@ namespace bitki_analiz_sistemi
         // SQLite bağlantı dizesi
         private string connectionString = @"Data Source=C:\Users\HP\Desktop\Bitkiler.db;Version=3;";
 
-
+        public string SecilenUzunluk { get; private set; }
 
         public Form1()
         {
@@ -93,21 +93,11 @@ namespace bitki_analiz_sistemi
             public double Speed { get; set; }
         }
 
-        private void Bilgiver_Click(object sender, EventArgs e)
+        private string GetSecilenUzunluk()
         {
-
-            Form2 form2 = new Form2();
-
-            // Seçilen bilgileri Form2'ye aktarıyoruz
-            form2.SecilenBitkiAdi = TürAdı.Text;
-            form2.SecilenYuzey = comboBoxYuzey.Text;
-            form2.SecilenDallanma = comboBoxDallanma.Text;
-            form2.SecilenCap = comboBoxcap.Text;
-            form2.SecilenNodyum = comboBoxNodyum.Text;
-
-            // Form2'yi açıyoruz
-            form2.Show();
+            return SecilenUzunluk;
         }
+
 
         private void TürAra_Click(object sender, EventArgs e)
         {
@@ -185,6 +175,27 @@ namespace bitki_analiz_sistemi
             }
         }
 
-      
+        private void Bilgiver_Click(object sender, EventArgs e)
+        {
+
+            // Bitki adını temizle, boşlukları ve fazladan karakterleri kaldır
+            string bitkiAdi = TürAdı.Text.Replace("Bulunan Bitki: ", "").Trim();
+            // Ekstra temizlik: birden fazla boşluğu tek boşluğa indir, alt tireyi boşlukla değiştir
+            bitkiAdi = System.Text.RegularExpressions.Regex.Replace(bitkiAdi, @"\s+", " ").Replace("_", " ");
+            // Debug: Gelen bitki adını göster
+            Form2 form2 = new Form2
+            {
+                SecilenBitkiAdi = bitkiAdi,
+                SecilenYuzey = comboBoxYuzey.Text,
+                SecilenDallanma = comboBoxDallanma.Text,
+                SecilenCap = comboBoxcap.Text,
+                SecilenNodyum = comboBoxNodyum.Text,
+                SecilenTuyDurumu = comboBoxTuyDurumu.Text,
+                secilenUzunluk = comboBoxUzunluk.Text,
+                SecilenDurus = comboBoxDurus.Text,
+                SecilenRenk = comboBoxRenk.Text
+            };
+            form2.Show();
+        }
     }
 }

@@ -3,24 +3,20 @@
   "WorkspaceRootPath": "C:\\Users\\HP\\Desktop\\bitki_analiz_sistemi\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{9E08B63F-6442-4C16-82CA-C3E90293FE90}|bitki_analiz_sistemi\\bitki_analiz_sistemi.csproj|C:\\Users\\HP\\Desktop\\bitki_analiz_sistemi\\bitki_analiz_sistemi\\Form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9E08B63F-6442-4C16-82CA-C3E90293FE90}|bitki_analiz_sistemi\\bitki_analiz_sistemi.csproj|solutionrelative:bitki_analiz_sistemi\\Form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9E08B63F-6442-4C16-82CA-C3E90293FE90}|bitki_analiz_sistemi\\bitki_analiz_sistemi.csproj|c:\\users\\hp\\desktop\\bitki_analiz_sistemi\\bitki_analiz_sistemi\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "AbsoluteMoniker": "D:0:0:{9E08B63F-6442-4C16-82CA-C3E90293FE90}|bitki_analiz_sistemi\\bitki_analiz_sistemi.csproj|C:\\Users\\HP\\Desktop\\bitki_analiz_sistemi\\bitki_analiz_sistemi\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{9E08B63F-6442-4C16-82CA-C3E90293FE90}|bitki_analiz_sistemi\\bitki_analiz_sistemi.csproj|solutionrelative:bitki_analiz_sistemi\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9E08B63F-6442-4C16-82CA-C3E90293FE90}|bitki_analiz_sistemi\\bitki_analiz_sistemi.csproj|c:\\users\\hp\\desktop\\bitki_analiz_sistemi\\bitki_analiz_sistemi\\form1.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9E08B63F-6442-4C16-82CA-C3E90293FE90}|bitki_analiz_sistemi\\bitki_analiz_sistemi.csproj|solutionrelative:bitki_analiz_sistemi\\form1.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{9E08B63F-6442-4C16-82CA-C3E90293FE90}|bitki_analiz_sistemi\\bitki_analiz_sistemi.csproj|C:\\Users\\HP\\Desktop\\bitki_analiz_sistemi\\bitki_analiz_sistemi\\form2.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{9E08B63F-6442-4C16-82CA-C3E90293FE90}|bitki_analiz_sistemi\\bitki_analiz_sistemi.csproj|solutionrelative:bitki_analiz_sistemi\\form2.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
       "AbsoluteMoniker": "D:0:0:{9E08B63F-6442-4C16-82CA-C3E90293FE90}|bitki_analiz_sistemi\\bitki_analiz_sistemi.csproj|c:\\users\\hp\\desktop\\bitki_analiz_sistemi\\bitki_analiz_sistemi\\form2.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{9E08B63F-6442-4C16-82CA-C3E90293FE90}|bitki_analiz_sistemi\\bitki_analiz_sistemi.csproj|solutionrelative:bitki_analiz_sistemi\\form2.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9E08B63F-6442-4C16-82CA-C3E90293FE90}|bitki_analiz_sistemi\\bitki_analiz_sistemi.csproj|C:\\Users\\HP\\Desktop\\bitki_analiz_sistemi\\bitki_analiz_sistemi\\Form2.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{9E08B63F-6442-4C16-82CA-C3E90293FE90}|bitki_analiz_sistemi\\bitki_analiz_sistemi.csproj|solutionrelative:bitki_analiz_sistemi\\Form2.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+      "AbsoluteMoniker": "D:0:0:{9E08B63F-6442-4C16-82CA-C3E90293FE90}|bitki_analiz_sistemi\\bitki_analiz_sistemi.csproj|C:\\Users\\HP\\Desktop\\bitki_analiz_sistemi\\bitki_analiz_sistemi\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9E08B63F-6442-4C16-82CA-C3E90293FE90}|bitki_analiz_sistemi\\bitki_analiz_sistemi.csproj|solutionrelative:bitki_analiz_sistemi\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -30,73 +26,61 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 2,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Form1.cs",
+              "DocumentMoniker": "C:\\Users\\HP\\Desktop\\bitki_analiz_sistemi\\bitki_analiz_sistemi\\Form1.cs",
+              "RelativeDocumentMoniker": "bitki_analiz_sistemi\\Form1.cs",
+              "ToolTip": "C:\\Users\\HP\\Desktop\\bitki_analiz_sistemi\\bitki_analiz_sistemi\\Form1.cs*",
+              "RelativeToolTip": "bitki_analiz_sistemi\\Form1.cs*",
+              "ViewState": "AgIAAK4AAAAAAAAAAAAcwLkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-08T05:15:31.672Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
             {
               "$type": "Bookmark",
               "Name": "ST:128:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Form1.Designer.cs",
-              "DocumentMoniker": "C:\\Users\\HP\\Desktop\\bitki_analiz_sistemi\\bitki_analiz_sistemi\\Form1.Designer.cs",
-              "RelativeDocumentMoniker": "bitki_analiz_sistemi\\Form1.Designer.cs",
-              "ToolTip": "C:\\Users\\HP\\Desktop\\bitki_analiz_sistemi\\bitki_analiz_sistemi\\Form1.Designer.cs",
-              "RelativeToolTip": "bitki_analiz_sistemi\\Form1.Designer.cs",
-              "ViewState": "AgIAAAcBAAAAAAAAAAAuwBcBAAAAAAAAAAAAAA==",
+              "DocumentIndex": 0,
+              "Title": "Form1.cs [Design]",
+              "DocumentMoniker": "C:\\Users\\HP\\Desktop\\bitki_analiz_sistemi\\bitki_analiz_sistemi\\Form1.cs",
+              "RelativeDocumentMoniker": "bitki_analiz_sistemi\\Form1.cs",
+              "ToolTip": "C:\\Users\\HP\\Desktop\\bitki_analiz_sistemi\\bitki_analiz_sistemi\\Form1.cs [Design]*",
+              "RelativeToolTip": "bitki_analiz_sistemi\\Form1.cs [Design]*",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-25T06:07:22.136Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-08T05:15:29.253Z",
+              "EditorCaption": " [Design]"
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "Form1.cs [Design]",
-              "DocumentMoniker": "C:\\Users\\HP\\Desktop\\bitki_analiz_sistemi\\bitki_analiz_sistemi\\Form1.cs",
-              "RelativeDocumentMoniker": "bitki_analiz_sistemi\\Form1.cs",
-              "ToolTip": "C:\\Users\\HP\\Desktop\\bitki_analiz_sistemi\\bitki_analiz_sistemi\\Form1.cs [Design]",
-              "RelativeToolTip": "bitki_analiz_sistemi\\Form1.cs [Design]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-25T05:51:47.495Z",
-              "EditorCaption": " [Design]"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Form1.cs",
-              "DocumentMoniker": "C:\\Users\\HP\\Desktop\\bitki_analiz_sistemi\\bitki_analiz_sistemi\\Form1.cs",
-              "RelativeDocumentMoniker": "bitki_analiz_sistemi\\Form1.cs",
-              "ToolTip": "C:\\Users\\HP\\Desktop\\bitki_analiz_sistemi\\bitki_analiz_sistemi\\Form1.cs",
-              "RelativeToolTip": "bitki_analiz_sistemi\\Form1.cs",
-              "ViewState": "AgIAADMAAAAAAAAAAAAuwD4AAAAqAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-17T06:26:37.588Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
               "Title": "Form2.cs [Design]",
               "DocumentMoniker": "C:\\Users\\HP\\Desktop\\bitki_analiz_sistemi\\bitki_analiz_sistemi\\Form2.cs",
               "RelativeDocumentMoniker": "bitki_analiz_sistemi\\Form2.cs",
-              "ToolTip": "C:\\Users\\HP\\Desktop\\bitki_analiz_sistemi\\bitki_analiz_sistemi\\Form2.cs [Design]",
-              "RelativeToolTip": "bitki_analiz_sistemi\\Form2.cs [Design]",
+              "ToolTip": "C:\\Users\\HP\\Desktop\\bitki_analiz_sistemi\\bitki_analiz_sistemi\\Form2.cs [Design]*",
+              "RelativeToolTip": "bitki_analiz_sistemi\\Form2.cs [Design]*",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-17T19:00:31.536Z",
+              "WhenOpened": "2025-04-08T05:15:26.2Z",
               "EditorCaption": " [Design]"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 2,
               "Title": "Form2.cs",
               "DocumentMoniker": "C:\\Users\\HP\\Desktop\\bitki_analiz_sistemi\\bitki_analiz_sistemi\\Form2.cs",
               "RelativeDocumentMoniker": "bitki_analiz_sistemi\\Form2.cs",
-              "ToolTip": "C:\\Users\\HP\\Desktop\\bitki_analiz_sistemi\\bitki_analiz_sistemi\\Form2.cs",
-              "RelativeToolTip": "bitki_analiz_sistemi\\Form2.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAASAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\HP\\Desktop\\bitki_analiz_sistemi\\bitki_analiz_sistemi\\Form2.cs*",
+              "RelativeToolTip": "bitki_analiz_sistemi\\Form2.cs*",
+              "ViewState": "AgIAAGkAAAAAAAAAAAAswHEAAAAKAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-25T05:54:21.081Z",
+              "WhenOpened": "2025-04-08T05:15:40.475Z",
               "EditorCaption": ""
             }
           ]

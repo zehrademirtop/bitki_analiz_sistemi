@@ -45,8 +45,6 @@
             this.comboBoxDallanma = new System.Windows.Forms.ComboBox();
             this.comboBoxNodyum = new System.Windows.Forms.ComboBox();
             this.comboBoxUzunluk = new System.Windows.Forms.ComboBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
             this.TürAra = new System.Windows.Forms.Button();
             this.TürAdı = new System.Windows.Forms.Label();
             this.Bilgiver = new System.Windows.Forms.Button();
@@ -216,30 +214,10 @@
             this.comboBoxUzunluk.Size = new System.Drawing.Size(121, 24);
             this.comboBoxUzunluk.TabIndex = 25;
             // 
-            // button1
-            // 
-            this.button1.BackColor = System.Drawing.Color.YellowGreen;
-            this.button1.Location = new System.Drawing.Point(8, 321);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(97, 42);
-            this.button1.TabIndex = 26;
-            this.button1.Text = "BtnEkle";
-            this.button1.UseVisualStyleBackColor = false;
-            // 
-            // button3
-            // 
-            this.button3.BackColor = System.Drawing.Color.YellowGreen;
-            this.button3.Location = new System.Drawing.Point(8, 369);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(97, 39);
-            this.button3.TabIndex = 28;
-            this.button3.Text = "BtnKaydet";
-            this.button3.UseVisualStyleBackColor = false;
-            // 
             // TürAra
             // 
             this.TürAra.BackColor = System.Drawing.Color.YellowGreen;
-            this.TürAra.Location = new System.Drawing.Point(112, 321);
+            this.TürAra.Location = new System.Drawing.Point(12, 336);
             this.TürAra.Name = "TürAra";
             this.TürAra.Size = new System.Drawing.Size(98, 42);
             this.TürAra.TabIndex = 30;
@@ -251,7 +229,7 @@
             // 
             this.TürAdı.AutoSize = true;
             this.TürAdı.BackColor = System.Drawing.Color.White;
-            this.TürAdı.Location = new System.Drawing.Point(216, 336);
+            this.TürAdı.Location = new System.Drawing.Point(116, 350);
             this.TürAdı.Name = "TürAdı";
             this.TürAdı.Size = new System.Drawing.Size(47, 16);
             this.TürAdı.TabIndex = 31;
@@ -260,7 +238,7 @@
             // Bilgiver
             // 
             this.Bilgiver.BackColor = System.Drawing.Color.YellowGreen;
-            this.Bilgiver.Location = new System.Drawing.Point(112, 369);
+            this.Bilgiver.Location = new System.Drawing.Point(116, 369);
             this.Bilgiver.Name = "Bilgiver";
             this.Bilgiver.Size = new System.Drawing.Size(97, 39);
             this.Bilgiver.TabIndex = 32;
@@ -271,7 +249,7 @@
             // labelHavaDurumu
             // 
             this.labelHavaDurumu.AutoSize = true;
-            this.labelHavaDurumu.ForeColor = System.Drawing.Color.ForestGreen;
+            this.labelHavaDurumu.ForeColor = System.Drawing.Color.White;
             this.labelHavaDurumu.Location = new System.Drawing.Point(5, 9);
             this.labelHavaDurumu.Name = "labelHavaDurumu";
             this.labelHavaDurumu.Size = new System.Drawing.Size(86, 16);
@@ -283,13 +261,11 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Tan;
-            this.ClientSize = new System.Drawing.Size(712, 438);
+            this.ClientSize = new System.Drawing.Size(830, 524);
             this.Controls.Add(this.labelHavaDurumu);
             this.Controls.Add(this.Bilgiver);
             this.Controls.Add(this.TürAdı);
             this.Controls.Add(this.TürAra);
-            this.Controls.Add(this.button3);
-            this.Controls.Add(this.button1);
             this.Controls.Add(this.comboBoxUzunluk);
             this.Controls.Add(this.comboBoxNodyum);
             this.Controls.Add(this.comboBoxDallanma);
@@ -333,8 +309,6 @@
         private System.Windows.Forms.ComboBox comboBoxDallanma;
         private System.Windows.Forms.ComboBox comboBoxNodyum;
         private System.Windows.Forms.ComboBox comboBoxUzunluk;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button TürAra;
         private System.Windows.Forms.Label TürAdı;
         private System.Windows.Forms.Button Bilgiver;
