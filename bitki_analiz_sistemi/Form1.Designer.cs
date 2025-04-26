@@ -51,6 +51,7 @@
             this.labelHavaDurumu = new System.Windows.Forms.Label();
             this.labelMensei = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
+            this.comboBoxTurAdi = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // label1
@@ -294,12 +295,21 @@
             this.label10.TabIndex = 36;
             this.label10.Text = "Mensei";
             // 
+            // comboBoxTurAdi
+            // 
+            this.comboBoxTurAdi.FormattingEnabled = true;
+            this.comboBoxTurAdi.Location = new System.Drawing.Point(224, 336);
+            this.comboBoxTurAdi.Name = "comboBoxTurAdi";
+            this.comboBoxTurAdi.Size = new System.Drawing.Size(121, 24);
+            this.comboBoxTurAdi.TabIndex = 37;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Tan;
             this.ClientSize = new System.Drawing.Size(830, 524);
+            this.Controls.Add(this.comboBoxTurAdi);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.labelMensei);
             this.Controls.Add(this.labelHavaDurumu);
@@ -355,6 +365,7 @@
         private System.Windows.Forms.Label labelHavaDurumu;
         private System.Windows.Forms.Label labelMensei;
         private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.ComboBox comboBoxTurAdi;
     }
 }
 
