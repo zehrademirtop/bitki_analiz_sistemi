@@ -75,6 +75,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bitki.cs" />
+    <Compile Include="BitkiMensei.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

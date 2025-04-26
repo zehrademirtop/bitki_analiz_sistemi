@@ -8,9 +8,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.IO;
-using iTextSharp.text;
-using iTextSharp.text.pdf;
 using System.Net.Http;
 using Newtonsoft.Json;
 namespace bitki_analiz_sistemi
@@ -19,8 +16,8 @@ namespace bitki_analiz_sistemi
     {
         private string apiKey = "fafc3e9f50a6e2dfd4b249e972a4fe8a"; // Weather API Key
         private string cityName = "Iğdır";  // Hava durumu bilgisini almak istediğimiz şehir
-
-        // SQLite bağlantı dizesi
+        private readonly HttpClient _httpClient = new HttpClient();
+        private const string menseiApiUrl = "https://localhost:7219/api/mensei"; // API portu doğru
         private string connectionString = @"Data Source=C:\Users\HP\Desktop\Bitkiler.db;Version=3;";
 
         public string SecilenUzunluk { get; private set; }
@@ -92,14 +89,30 @@ namespace bitki_analiz_sistemi
         {
             public double Speed { get; set; }
         }
-
-        private string GetSecilenUzunluk()
+       private async Task<string> GetMenseiFromApi(string bitkiAdi)
         {
-            return SecilenUzunluk;
+            try
+            {
+                var response = await _httpClient.GetAsync($"{menseiApiUrl}?bitki={Uri.EscapeDataString(bitkiAdi)}");
+                response.EnsureSuccessStatusCode();
+                var content = await response.Content.ReadAsStringAsync();
+                var menseiData = JsonConvert.DeserializeObject<BitkiMensei>(content);
+                return menseiData.Mensei;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Menşei alınırken hata: {ex.Message}\nBitki: {bitkiAdi}", "API Hatası");
+                return "Bilinmiyor";
+            }
         }
 
+        public class BitkiMensei
+        {
+            public string Bitki { get; set; }
+            public string Mensei { get; set; }
+        }
 
-        private void TürAra_Click(object sender, EventArgs e)
+        private async void TürAra_Click(object sender, EventArgs e)
         {
             // Kullanıcı tarafından seçilen combobox değerlerini güvenli şekilde alıyoruz
             string cap = comboBoxcap.SelectedItem?.ToString() ?? "";
@@ -112,6 +125,7 @@ namespace bitki_analiz_sistemi
             if (Yuzey == "Tüylü" || Yuzey == "Seyrek Tüylü")
             {
                 TürAdı.Text = "Bulunan Bitki: Ankyropetalum arsusianum";
+                labelMensei.Text = "Menşei: " + await GetMenseiFromApi("Ankyropetalum arsusianum");
                 return;
             }
 
@@ -119,6 +133,7 @@ namespace bitki_analiz_sistemi
             if (Dallanma == "Tabanda Sık" && cap == "1-3 mm" && Nodyum == "İnternodlar Kısa")
             {
                 TürAdı.Text = "Bulunan Bitki: Ankyropetalum reuteri";
+                labelMensei.Text = "Menşei: " + await GetMenseiFromApi("Ankyropetalum reuteri");
                 return;
             }
 
@@ -126,6 +141,7 @@ namespace bitki_analiz_sistemi
             if (Dallanma == "Tabanda Birkaç" && cap == "2,5-5 mm" && Nodyum == "İnternodlar Belirgin")
             {
                 TürAdı.Text = "Bulunan Bitki: Ankyropetalum gypsophiloides";
+                labelMensei.Text = "Menşei: " + await GetMenseiFromApi("Ankyropetalum gypsophiloides");
                 return;
             }
 
@@ -154,23 +170,24 @@ namespace bitki_analiz_sistemi
                     if (!string.IsNullOrWhiteSpace(Nodyum)) command.Parameters.AddWithValue("@Nodyum", Nodyum);
 
                     SQLiteDataReader reader = command.ExecuteReader();
-
                     if (reader.HasRows)
                     {
                         reader.Read();
                         string bitkiAdi = reader["BitkiAdi"].ToString();
-                        TürAdı.Text = "" + bitkiAdi;
+                        TürAdı.Text = $"Bulunan Bitki: {bitkiAdi}";
+                        labelMensei.Text = "Menşei: " + await GetMenseiFromApi(bitkiAdi);
                     }
                     else
                     {
                         TürAdı.Text = "Bitki bulunamadı.";
+                        labelMensei.Text = "Menşei: Bilinmiyor";
                     }
-
                     reader.Close();
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Bir hata oluştu: {ex.Message}");
+                    MessageBox.Show($"Veritabanı hatası: {ex.Message}", "Hata");
+                    labelMensei.Text = "Menşei: Bilinmiyor";
                 }
             }
         }

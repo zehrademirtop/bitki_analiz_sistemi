@@ -49,16 +49,19 @@
             this.TürAdı = new System.Windows.Forms.Label();
             this.Bilgiver = new System.Windows.Forms.Button();
             this.labelHavaDurumu = new System.Windows.Forms.Label();
+            this.labelMensei = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.BackColor = System.Drawing.Color.YellowGreen;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.label1.ForeColor = System.Drawing.Color.Maroon;
             this.label1.Location = new System.Drawing.Point(313, 42);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(87, 16);
+            this.label1.Size = new System.Drawing.Size(98, 16);
             this.label1.TabIndex = 1;
             this.label1.Text = "Gövde(Stem)";
             // 
@@ -66,10 +69,11 @@
             // 
             this.label2.AutoSize = true;
             this.label2.BackColor = System.Drawing.Color.YellowGreen;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.label2.ForeColor = System.Drawing.Color.Maroon;
             this.label2.Location = new System.Drawing.Point(5, 104);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(32, 16);
+            this.label2.Size = new System.Drawing.Size(35, 16);
             this.label2.TabIndex = 2;
             this.label2.Text = "Çap";
             // 
@@ -77,10 +81,11 @@
             // 
             this.label3.AutoSize = true;
             this.label3.BackColor = System.Drawing.Color.YellowGreen;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.label3.ForeColor = System.Drawing.Color.Maroon;
-            this.label3.Location = new System.Drawing.Point(231, 104);
+            this.label3.Location = new System.Drawing.Point(221, 104);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(79, 16);
+            this.label3.Size = new System.Drawing.Size(89, 16);
             this.label3.TabIndex = 3;
             this.label3.Text = "Tüy Durumu";
             // 
@@ -88,10 +93,11 @@
             // 
             this.label4.AutoSize = true;
             this.label4.BackColor = System.Drawing.Color.YellowGreen;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.label4.ForeColor = System.Drawing.Color.Maroon;
-            this.label4.Location = new System.Drawing.Point(486, 107);
+            this.label4.Location = new System.Drawing.Point(502, 107);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(42, 16);
+            this.label4.Size = new System.Drawing.Size(47, 16);
             this.label4.TabIndex = 4;
             this.label4.Text = "Duruş";
             // 
@@ -99,10 +105,11 @@
             // 
             this.label5.AutoSize = true;
             this.label5.BackColor = System.Drawing.Color.YellowGreen;
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.label5.ForeColor = System.Drawing.Color.Maroon;
             this.label5.Location = new System.Drawing.Point(5, 185);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(44, 16);
+            this.label5.Size = new System.Drawing.Size(49, 16);
             this.label5.TabIndex = 5;
             this.label5.Text = "Yüzey";
             // 
@@ -110,10 +117,11 @@
             // 
             this.label6.AutoSize = true;
             this.label6.BackColor = System.Drawing.Color.YellowGreen;
+            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.label6.ForeColor = System.Drawing.Color.Maroon;
             this.label6.Location = new System.Drawing.Point(5, 146);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(39, 16);
+            this.label6.Size = new System.Drawing.Size(43, 16);
             this.label6.TabIndex = 6;
             this.label6.Text = "Renk";
             // 
@@ -121,10 +129,11 @@
             // 
             this.label7.AutoSize = true;
             this.label7.BackColor = System.Drawing.Color.YellowGreen;
+            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.label7.ForeColor = System.Drawing.Color.Maroon;
-            this.label7.Location = new System.Drawing.Point(231, 146);
+            this.label7.Location = new System.Drawing.Point(237, 141);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(65, 16);
+            this.label7.Size = new System.Drawing.Size(73, 16);
             this.label7.TabIndex = 15;
             this.label7.Text = "Dallanma";
             // 
@@ -132,10 +141,11 @@
             // 
             this.label8.AutoSize = true;
             this.label8.BackColor = System.Drawing.Color.YellowGreen;
+            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.label8.ForeColor = System.Drawing.Color.Maroon;
-            this.label8.Location = new System.Drawing.Point(486, 146);
+            this.label8.Location = new System.Drawing.Point(480, 141);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(58, 16);
+            this.label8.Size = new System.Drawing.Size(64, 16);
             this.label8.TabIndex = 16;
             this.label8.Text = "Nodyum";
             // 
@@ -143,10 +153,11 @@
             // 
             this.label9.AutoSize = true;
             this.label9.BackColor = System.Drawing.Color.YellowGreen;
+            this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.label9.ForeColor = System.Drawing.Color.Maroon;
-            this.label9.Location = new System.Drawing.Point(231, 188);
+            this.label9.Location = new System.Drawing.Point(249, 185);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(54, 16);
+            this.label9.Size = new System.Drawing.Size(61, 16);
             this.label9.TabIndex = 17;
             this.label9.Text = "Uzunluk";
             // 
@@ -217,6 +228,7 @@
             // TürAra
             // 
             this.TürAra.BackColor = System.Drawing.Color.YellowGreen;
+            this.TürAra.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.TürAra.Location = new System.Drawing.Point(12, 336);
             this.TürAra.Name = "TürAra";
             this.TürAra.Size = new System.Drawing.Size(98, 42);
@@ -228,16 +240,19 @@
             // TürAdı
             // 
             this.TürAdı.AutoSize = true;
-            this.TürAdı.BackColor = System.Drawing.Color.White;
-            this.TürAdı.Location = new System.Drawing.Point(116, 350);
+            this.TürAdı.BackColor = System.Drawing.Color.Tan;
+            this.TürAdı.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.TürAdı.ForeColor = System.Drawing.Color.White;
+            this.TürAdı.Location = new System.Drawing.Point(116, 349);
             this.TürAdı.Name = "TürAdı";
-            this.TürAdı.Size = new System.Drawing.Size(47, 16);
+            this.TürAdı.Size = new System.Drawing.Size(53, 16);
             this.TürAdı.TabIndex = 31;
             this.TürAdı.Text = "TürAdı";
             // 
             // Bilgiver
             // 
             this.Bilgiver.BackColor = System.Drawing.Color.YellowGreen;
+            this.Bilgiver.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.Bilgiver.Location = new System.Drawing.Point(116, 369);
             this.Bilgiver.Name = "Bilgiver";
             this.Bilgiver.Size = new System.Drawing.Size(97, 39);
@@ -249,12 +264,35 @@
             // labelHavaDurumu
             // 
             this.labelHavaDurumu.AutoSize = true;
+            this.labelHavaDurumu.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.labelHavaDurumu.ForeColor = System.Drawing.Color.White;
             this.labelHavaDurumu.Location = new System.Drawing.Point(5, 9);
             this.labelHavaDurumu.Name = "labelHavaDurumu";
-            this.labelHavaDurumu.Size = new System.Drawing.Size(86, 16);
+            this.labelHavaDurumu.Size = new System.Drawing.Size(96, 16);
             this.labelHavaDurumu.TabIndex = 34;
             this.labelHavaDurumu.Text = "HavaDurumu";
+            // 
+            // labelMensei
+            // 
+            this.labelMensei.AutoSize = true;
+            this.labelMensei.BackColor = System.Drawing.Color.YellowGreen;
+            this.labelMensei.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.labelMensei.Location = new System.Drawing.Point(562, 349);
+            this.labelMensei.Name = "labelMensei";
+            this.labelMensei.Size = new System.Drawing.Size(92, 16);
+            this.labelMensei.TabIndex = 35;
+            this.labelMensei.Text = "labelMensei";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.label10.ForeColor = System.Drawing.Color.White;
+            this.label10.Location = new System.Drawing.Point(499, 349);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(57, 16);
+            this.label10.TabIndex = 36;
+            this.label10.Text = "Mensei";
             // 
             // Form1
             // 
@@ -262,6 +300,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Tan;
             this.ClientSize = new System.Drawing.Size(830, 524);
+            this.Controls.Add(this.label10);
+            this.Controls.Add(this.labelMensei);
             this.Controls.Add(this.labelHavaDurumu);
             this.Controls.Add(this.Bilgiver);
             this.Controls.Add(this.TürAdı);
@@ -313,6 +353,8 @@
         private System.Windows.Forms.Label TürAdı;
         private System.Windows.Forms.Button Bilgiver;
         private System.Windows.Forms.Label labelHavaDurumu;
+        private System.Windows.Forms.Label labelMensei;
+        private System.Windows.Forms.Label label10;
     }
 }
 
