@@ -175,7 +175,7 @@ namespace bitki_analiz_sistemi
             {
                 MessageBox.Show("PDF oluşturulurken hata oluştu: " + ex.Message, "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-        }
+        } 
 
         private void btnPdfGoster_Click(object sender, EventArgs e)
         {
