@@ -23,6 +23,7 @@ namespace bitki_analiz_sistemi
     public partial class Form2 : Form
     {
         internal string secilenUzunluk;
+        private string sonPdfYolu;
 
         public string SecilenBitkiAdi { get; set; }
         public string SecilenYuzey { get; set; }
@@ -146,48 +147,162 @@ namespace bitki_analiz_sistemi
 
         private void btnPdfOlustur_Click(object sender, EventArgs e)
         {
-            try
+            SaveFileDialog saveFile = new SaveFileDialog
             {
-                string pdfYolu = Path.Combine(Application.StartupPath, "BitkiBilgileri.pdf");
+                Filter = "PDF Dosyaları|*.pdf",
+                Title = "PDF Dosyası Kaydet",
+                FileName = "BitkiBilgileri_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".pdf" // Benzersiz dosya adı
+            };
 
-                Document doc = new Document();
-                PdfWriter.GetInstance(doc, new FileStream(pdfYolu, FileMode.Create));
-                doc.Open();
+            string logoYolu = @"C:\Users\HP\Desktop\images1.png"; // Logo dosya yolu
+            string resimKlasoru = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "resimler"); // Mutlak yol
+            if (string.IsNullOrEmpty(SecilenBitkiAdi))
+            {
+                MessageBox.Show("Seçilen bitki adı boş!", "Hata");
+                return;
+            }
 
-                // 📌 iTextSharp'ın Font sınıfını açıkça belirtiyoruz
-                string arialTtf = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Fonts), "arial.ttf");
-                BaseFont arialBaseFont = BaseFont.CreateFont(arialTtf, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-                iTextSharp.text.Font turkceFont = new iTextSharp.text.Font(arialBaseFont, 12, iTextSharp.text.Font.NORMAL);
+            // SecilenBitkiAdi’yi temizle
+            string temizBitkiAdi = SecilenBitkiAdi
+                .Trim() // Baştaki/sondaki boşlukları sil
+                .Replace(" ", "_") // Boşlukları _ ile değiştir
+                .Replace("__", "_"); // Çift _’yi tek yap
+            string bitkiResimYolu = Path.Combine(resimKlasoru, $"{temizBitkiAdi}.png");
 
-                doc.Add(new Paragraph("Bitki Bilgileri\n", turkceFont));
-                doc.Add(new Paragraph("----------------------------------------\n", turkceFont));
+            // Dosya var mı kontrol et
+            if (!File.Exists(bitkiResimYolu))
+            {
+                // Büyük-küçük harf duyarlılığını atla
+                string[] resimDosyalari = Directory.GetFiles(resimKlasoru, "*.png", SearchOption.TopDirectoryOnly);
+                foreach (string dosya in resimDosyalari)
+                {
+                    string dosyaAdi = Path.GetFileNameWithoutExtension(dosya);
+                    if (dosyaAdi.Equals(temizBitkiAdi, StringComparison.OrdinalIgnoreCase))
+                    {
+                        bitkiResimYolu = dosya;
+                        break;
+                    }
+                }
+            }
 
+            // ListView verisini debug et
+            if (listViewBilgiler.Items.Count == 0)
+            {
+                MessageBox.Show("ListView'de veri yok! Tablo boş.", "Debug");
+                return;
+            }
+            else
+            {
+                string items = "ListView Verisi:\n";
                 foreach (ListViewItem item in listViewBilgiler.Items)
                 {
-                    string satir = $"{item.SubItems[0].Text}: {item.SubItems[1].Text}";
-                    doc.Add(new Paragraph(satir, turkceFont));
+                    items += $"{item.SubItems[0].Text}: {item.SubItems[1].Text}\n";
                 }
-
-                doc.Close();
-                MessageBox.Show("PDF başarıyla oluşturuldu!", "Başarılı", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(items, "Debug");
             }
-            catch (Exception ex)
+
+            if (saveFile.ShowDialog() == DialogResult.OK)
             {
-                MessageBox.Show("PDF oluşturulurken hata oluştu: " + ex.Message, "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                try
+                {
+                    using (FileStream stream = new FileStream(saveFile.FileName, FileMode.Create, FileAccess.Write, FileShare.None))
+                    {
+                        Document document = new Document(PageSize.A4, 50, 50, 100, 50); // Üst boşluk
+                        PdfWriter writer = PdfWriter.GetInstance(document, stream);
+                        document.Open();
+
+                        // Türkçe Karakterler İçin Font Ayarı
+                        BaseFont baseFont = BaseFont.CreateFont(@"C:\Windows\Fonts\arial.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+                        iTextSharp.text.Font baslikFont = new iTextSharp.text.Font(baseFont, 14, iTextSharp.text.Font.BOLD); // Başlık fontu
+                        iTextSharp.text.Font kalinFont = new iTextSharp.text.Font(baseFont, 12, iTextSharp.text.Font.BOLD); // Kalın font
+                        iTextSharp.text.Font normalFont = new iTextSharp.text.Font(baseFont, 12, iTextSharp.text.Font.NORMAL); // Normal font
+
+                        // LOGO EKLEME (Sol Üst Köşe)
+                        if (File.Exists(logoYolu))
+                        {
+                            iTextSharp.text.Image logo = iTextSharp.text.Image.GetInstance(logoYolu);
+                            logo.ScaleAbsolute(70, 70); // Daha küçük logo
+                            logo.SetAbsolutePosition(50, PageSize.A4.Height - 70); // Sol üst
+                            document.Add(logo);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Logo bulunamadı! Devam ediliyor...", "Uyarı", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }
+
+                        // "Iğdır Üniversitesi" YAZISI (Sağ Üst Köşe)
+                        ColumnText.ShowTextAligned(writer.DirectContent, Element.ALIGN_RIGHT, new Phrase("IĞDIR ÜNİVERSİTESİ", normalFont), PageSize.A4.Width - 50, PageSize.A4.Height - 60, 0);
+
+                        // BİTKİ RESMİ EKLEME (Tablonun üstünde, yatay ortalı, sabit)
+                        if (File.Exists(bitkiResimYolu))
+                        {
+                            iTextSharp.text.Image bitkiResim = iTextSharp.text.Image.GetInstance(bitkiResimYolu);
+                            bitkiResim.ScaleAbsolute(180, 180); // Resim boyutu
+                            float x = (PageSize.A4.Width - bitkiResim.ScaledWidth) / 2; // Yatay ortalı
+                            float y = PageSize.A4.Height - 250; // Sayfanın üstünden 250 birim aşağı
+                            bitkiResim.SetAbsolutePosition(x, y);
+                            document.Add(bitkiResim);
+                        }
+                        else
+                        {
+                            MessageBox.Show($"Bitki resmi bulunamadı: {bitkiResimYolu}! Devam ediliyor...", "Uyarı", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }
+
+                        // "Bitki Bilgileri" YAZISI (Tablonun sol üst köşesinde)
+                        ColumnText.ShowTextAligned(writer.DirectContent, Element.ALIGN_LEFT, new Phrase("Bitki Bilgileri", baslikFont), 50, 550, 0);
+
+                        // TABLO OLUŞTURMA (Resmin altında, sayfanın alt kısmında, mutlak konum)
+                        PdfPTable table = new PdfPTable(2) // 2 sütun: Özellik ve Değer
+                        {
+                            WidthPercentage = 100 // Tabloyu sayfaya yay
+                        };
+                        table.DefaultCell.Padding = 4;
+                        table.DefaultCell.HorizontalAlignment = Element.ALIGN_LEFT;
+
+                        // Sütun Başlıkları (Kalın)
+                        table.AddCell(new Phrase("Özellik", kalinFont));
+                        table.AddCell(new Phrase("Değer", kalinFont));
+
+                        // ListView'den Satırları Ekle
+                        foreach (ListViewItem item in listViewBilgiler.Items)
+                        {
+                            table.AddCell(new Phrase(item.SubItems[0].Text, kalinFont)); // Özellik: Kalın
+                            table.AddCell(new Phrase(item.SubItems[1].Text, normalFont)); // Değer: Normal
+                        }
+
+                        // Tabloyu mutlak konuma sabitle (resmin altına, sayfanın alt kısmı)
+                        table.TotalWidth = PageSize.A4.Width - 100; // Kenar boşlukları için
+                        table.WriteSelectedRows(0, -1, 50, 540, writer.DirectContent); // y=400 (~450-550 aralığı)
+
+                        document.Close();
+                    }
+
+                    sonPdfYolu = saveFile.FileName; // PDF yolunu kaydet
+                    MessageBox.Show("PDF başarıyla oluşturuldu!", "Bilgi", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"PDF oluşturulurken hata oluştu: {ex.Message}", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 
         private void btnPdfGoster_Click(object sender, EventArgs e)
         {
-            string pdfYolu = Path.Combine(Application.StartupPath, "BitkiBilgileri.pdf");
-
-            if (File.Exists(pdfYolu))
+            if (!string.IsNullOrEmpty(sonPdfYolu) && File.Exists(sonPdfYolu))
             {
-                System.Diagnostics.Process.Start(pdfYolu);
+                try
+                {
+                    System.Diagnostics.Process.Start(sonPdfYolu); // PDF’yi varsayılan görüntüleyicide aç
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"PDF açılırken hata oluştu: {ex.Message}", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
             else
             {
-                MessageBox.Show("Önce PDF oluşturmalısınız!", "Dosya Bulunamadı", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("PDF dosyası bulunamadı! Lütfen önce PDF oluşturun.", "Uyarı", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 

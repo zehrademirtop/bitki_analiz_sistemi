@@ -46,7 +46,6 @@
             this.comboBoxNodyum = new System.Windows.Forms.ComboBox();
             this.comboBoxUzunluk = new System.Windows.Forms.ComboBox();
             this.TürAra = new System.Windows.Forms.Button();
-            this.TürAdı = new System.Windows.Forms.Label();
             this.Bilgiver = new System.Windows.Forms.Button();
             this.labelHavaDurumu = new System.Windows.Forms.Label();
             this.labelMensei = new System.Windows.Forms.Label();
@@ -238,23 +237,11 @@
             this.TürAra.UseVisualStyleBackColor = false;
             this.TürAra.Click += new System.EventHandler(this.TürAra_Click);
             // 
-            // TürAdı
-            // 
-            this.TürAdı.AutoSize = true;
-            this.TürAdı.BackColor = System.Drawing.Color.Tan;
-            this.TürAdı.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.TürAdı.ForeColor = System.Drawing.Color.White;
-            this.TürAdı.Location = new System.Drawing.Point(116, 349);
-            this.TürAdı.Name = "TürAdı";
-            this.TürAdı.Size = new System.Drawing.Size(53, 16);
-            this.TürAdı.TabIndex = 31;
-            this.TürAdı.Text = "TürAdı";
-            // 
             // Bilgiver
             // 
             this.Bilgiver.BackColor = System.Drawing.Color.YellowGreen;
             this.Bilgiver.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.Bilgiver.Location = new System.Drawing.Point(116, 369);
+            this.Bilgiver.Location = new System.Drawing.Point(116, 381);
             this.Bilgiver.Name = "Bilgiver";
             this.Bilgiver.Size = new System.Drawing.Size(97, 39);
             this.Bilgiver.TabIndex = 32;
@@ -298,10 +285,11 @@
             // comboBoxTurAdi
             // 
             this.comboBoxTurAdi.FormattingEnabled = true;
-            this.comboBoxTurAdi.Location = new System.Drawing.Point(224, 336);
+            this.comboBoxTurAdi.Location = new System.Drawing.Point(116, 341);
             this.comboBoxTurAdi.Name = "comboBoxTurAdi";
-            this.comboBoxTurAdi.Size = new System.Drawing.Size(121, 24);
+            this.comboBoxTurAdi.Size = new System.Drawing.Size(153, 24);
             this.comboBoxTurAdi.TabIndex = 37;
+            this.comboBoxTurAdi.SelectedIndexChanged += new System.EventHandler(this.comboBoxTurAdi_SelectedIndexChanged);
             // 
             // Form1
             // 
@@ -314,7 +302,6 @@
             this.Controls.Add(this.labelMensei);
             this.Controls.Add(this.labelHavaDurumu);
             this.Controls.Add(this.Bilgiver);
-            this.Controls.Add(this.TürAdı);
             this.Controls.Add(this.TürAra);
             this.Controls.Add(this.comboBoxUzunluk);
             this.Controls.Add(this.comboBoxNodyum);
@@ -360,7 +347,6 @@
         private System.Windows.Forms.ComboBox comboBoxNodyum;
         private System.Windows.Forms.ComboBox comboBoxUzunluk;
         private System.Windows.Forms.Button TürAra;
-        private System.Windows.Forms.Label TürAdı;
         private System.Windows.Forms.Button Bilgiver;
         private System.Windows.Forms.Label labelHavaDurumu;
         private System.Windows.Forms.Label labelMensei;

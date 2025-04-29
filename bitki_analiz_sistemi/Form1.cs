@@ -121,28 +121,21 @@ namespace bitki_analiz_sistemi
             string Dallanma = comboBoxDallanma.SelectedItem?.ToString() ?? "";
             string Nodyum = comboBoxNodyum.SelectedItem?.ToString() ?? "";
 
-            // Eğer "Yüzey" combobox'ı "Tüysüz" veya "Seyrek Tüylü" seçilmişse direkt sonucu verelim
+            // Tüm eşleşen bitkileri topla
+            List<string> bitkiAdlari = new List<string>();
+
+            // Hızlı eşleştirme kuralları
             if (Yuzey == "Tüylü" || Yuzey == "Seyrek Tüylü")
             {
-                TürAdı.Text = "Bulunan Bitki: Ankyropetalum arsusianum";
-                labelMensei.Text = "Menşei: " + await GetMenseiFromApi("Ankyropetalum arsusianum");
-                return;
+                bitkiAdlari.Add("Ankyropetalum arsusianum");
             }
-
-            // Eğer "Tabanda Sık" Dallanma veya "1-3 mm" Cap ve "İnternodlar Kısa" Nodyum seçilirse, "Ankyropetalum reuteri" bulunmalı
             if (Dallanma == "Tabanda Sık" && cap == "1-3 mm" && Nodyum == "İnternodlar Kısa")
             {
-                TürAdı.Text = "Bulunan Bitki: Ankyropetalum reuteri";
-                labelMensei.Text = "Menşei: " + await GetMenseiFromApi("Ankyropetalum reuteri");
-                return;
+                bitkiAdlari.Add("Ankyropetalum reuteri");
             }
-
-            // Eğer "Tabanda Birkaç" Dallanma veya "2,5-5 mm" Cap ve "İnternodlar Belirgin" Nodyum seçilirse, "Ankyropetalum gypsophiloides" bulunmalı
             if (Dallanma == "Tabanda Birkaç" && cap == "2,5-5 mm" && Nodyum == "İnternodlar Belirgin")
             {
-                TürAdı.Text = "Bulunan Bitki: Ankyropetalum gypsophiloides";
-                labelMensei.Text = "Menşei: " + await GetMenseiFromApi("Ankyropetalum gypsophiloides");
-                return;
+                bitkiAdlari.Add("Ankyropetalum gypsophiloides");
             }
 
             // Eğer seçim yapılmadan "Boş" gibi özel seçenekler seçildiyse, bunları SQL'de yokmuş gibi ele alalım
@@ -170,25 +163,35 @@ namespace bitki_analiz_sistemi
                     if (!string.IsNullOrWhiteSpace(Nodyum)) command.Parameters.AddWithValue("@Nodyum", Nodyum);
 
                     SQLiteDataReader reader = command.ExecuteReader();
-                    if (reader.HasRows)
+                    while (reader.Read())
                     {
-                        reader.Read();
                         string bitkiAdi = reader["BitkiAdi"].ToString();
-                        TürAdı.Text = $"Bulunan Bitki: {bitkiAdi}";
-                        labelMensei.Text = "Menşei: " + await GetMenseiFromApi(bitkiAdi);
-                    }
-                    else
-                    {
-                        TürAdı.Text = "Bitki bulunamadı.";
-                        labelMensei.Text = "Menşei: Bilinmiyor";
+                        if (!bitkiAdlari.Contains(bitkiAdi))
+                        {
+                            bitkiAdlari.Add(bitkiAdi);
+                        }
                     }
                     reader.Close();
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show($"Veritabanı hatası: {ex.Message}", "Hata");
-                    labelMensei.Text = "Menşei: Bilinmiyor";
+                    bitkiAdlari.Add("Hata oluştu.");
                 }
+            }
+
+            // comboBoxTurAdi’yı güncelle
+            comboBoxTurAdi.Items.Clear();
+            if (bitkiAdlari.Count > 0)
+            {
+                comboBoxTurAdi.Items.AddRange(bitkiAdlari.ToArray());
+                comboBoxTurAdi.SelectedIndex = 0; // İlkini seç
+            }
+            else
+            {
+                comboBoxTurAdi.Items.Add("Bitki bulunamadı.");
+                comboBoxTurAdi.SelectedIndex = 0;
+                labelMensei.Text = "Menşei: Bilinmiyor";
             }
         }
 
@@ -196,7 +199,7 @@ namespace bitki_analiz_sistemi
         {
 
             // Bitki adını temizle, boşlukları ve fazladan karakterleri kaldır
-            string bitkiAdi = TürAdı.Text.Replace("Bulunan Bitki: ", "").Trim();
+            string bitkiAdi = comboBoxTurAdi.Text.Replace("Bulunan Bitki: ", "").Trim();
             // Ekstra temizlik: birden fazla boşluğu tek boşluğa indir, alt tireyi boşlukla değiştir
             bitkiAdi = System.Text.RegularExpressions.Regex.Replace(bitkiAdi, @"\s+", " ").Replace("_", " ");
             // Debug: Gelen bitki adını göster
@@ -213,6 +216,19 @@ namespace bitki_analiz_sistemi
                 SecilenRenk = comboBoxRenk.Text
             };
             form2.Show();
+        }
+
+        private async void comboBoxTurAdi_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string secilenBitki = comboBoxTurAdi.SelectedItem?.ToString();
+            if (!string.IsNullOrEmpty(secilenBitki) && secilenBitki != "Bitki bulunamadı." && secilenBitki != "Hata oluştu.")
+            {
+                labelMensei.Text = "Menşei: " + await GetMenseiFromApi(secilenBitki);
+            }
+            else
+            {
+                labelMensei.Text = "Menşei: Bilinmiyor";
+            }
         }
     }
 }

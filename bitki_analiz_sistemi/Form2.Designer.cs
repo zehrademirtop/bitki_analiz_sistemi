@@ -132,7 +132,7 @@
             this.listViewBilgiler.Location = new System.Drawing.Point(503, 9);
             this.listViewBilgiler.MultiSelect = false;
             this.listViewBilgiler.Name = "listViewBilgiler";
-            this.listViewBilgiler.Size = new System.Drawing.Size(552, 259);
+            this.listViewBilgiler.Size = new System.Drawing.Size(564, 259);
             this.listViewBilgiler.TabIndex = 6;
             this.listViewBilgiler.UseCompatibleStateImageBehavior = false;
             this.listViewBilgiler.View = System.Windows.Forms.View.Details;
