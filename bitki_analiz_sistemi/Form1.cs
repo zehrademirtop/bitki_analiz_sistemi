@@ -17,14 +17,13 @@ namespace bitki_analiz_sistemi
 {
     public partial class Form1 : Form
     {
-        private string apiKey = "b205766cf4a248458c2210504252403"; // WeatherAPI API Key
-        private string cityName = "Iğdır";  // Hava durumu bilgisini almak istediğiniz şehir
+        private string apiKey = "fafc3e9f50a6e2dfd4b249e972a4fe8a"; // Weather API Key
+        private string cityName = "Iğdır";  // Hava durumu bilgisini almak istediğimiz şehir
 
         // SQLite bağlantı dizesi
-        private string connectionString = @"Data Source=C:\Users\demir\Desktop\bitki_analiz_sistemi\Bitkiler.db;Version=3;";
+        private string connectionString = @"Data Source=C:\Users\demir\Desktop\Bitkiler.db;Version=3;";
 
-
-
+        public string SecilenUzunluk { get; private set; }
 
         public Form1()
         {
@@ -43,28 +42,25 @@ namespace bitki_analiz_sistemi
             comboBoxDurus.Items.AddRange(new string[] { "boş" });
             comboBoxRenk.Items.AddRange(new string[] { "boş" });
         }
-        // Hava durumu verisini almak için API'yi çağırıyoruz
+
         private async Task GetWeatherData(string city)
         {
-            string url = $"https://api.weatherapi.com/v1/current.json?key={apiKey}&q={city}&lang=tr"; // WeatherAPI url
+            string apiKey = "fafc3e9f50a6e2dfd4b249e972a4fe8a"; // OpenWeatherMap API Anahtarını buraya ekle
+            string url = $"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={apiKey}&units=metric&lang=tr";
 
             using (HttpClient client = new HttpClient())
             {
                 try
                 {
-                    // API'den veri alıyoruz
                     HttpResponseMessage response = await client.GetAsync(url);
-                    response.EnsureSuccessStatusCode();  // Başarılı bir yanıt almazsak hata verecek
+                    response.EnsureSuccessStatusCode();
                     string responseData = await response.Content.ReadAsStringAsync();
 
-                    // JSON formatında gelen veriyi parse ediyoruz
                     var weatherData = JsonConvert.DeserializeObject<WeatherResponse>(responseData);
 
-                    // Hava durumu bilgilerini formda gösteriyoruz
-                    labelHavaDurumu.Text = $"Şehir: {weatherData.Location.Name}\n" +
-                                           $"Sıcaklık: {weatherData.Current.TempC}°C\n" +
-                                           $"Durum: {weatherData.Current.Condition.Text}\n" +
-                                           $"Rüzgar: {weatherData.Current.WindKph} km/h";
+                    labelHavaDurumu.Text = $"{weatherData.Name}: {weatherData.Main.Temp}°C\n" +
+                                           $"Durum: {weatherData.Weather[0].Description}\n" +
+                                           $"Rüzgar: {weatherData.Wind.Speed} m/s";
                 }
                 catch (Exception ex)
                 {
@@ -72,43 +68,36 @@ namespace bitki_analiz_sistemi
                 }
             }
         }
+
         // API'den gelen veriyi deserialize edebilmek için sınıf oluşturuyoruz
         public class WeatherResponse
         {
-            public Location Location { get; set; }
-            public CurrentWeather Current { get; set; }
-        }
-        public class Location
-        {
             public string Name { get; set; }
+            public MainWeather Main { get; set; }
+            public List<WeatherDescription> Weather { get; set; }
+            public Wind Wind { get; set; }
         }
 
-        public class CurrentWeather
+        public class MainWeather
         {
-            public double TempC { get; set; }
-            public Condition Condition { get; set; }
-            public double WindKph { get; set; }
+            public double Temp { get; set; }
         }
-        public class Condition
+
+        public class WeatherDescription
         {
-            public string Text { get; set; }
+            public string Description { get; set; }
         }
 
-        private void Bilgiver_Click(object sender, EventArgs e)
+        public class Wind
         {
-
-            Form2 form2 = new Form2();
-
-            // Seçilen bilgileri Form2'ye aktarıyoruz
-            form2.SecilenBitkiAdi = TürAdı.Text;
-            form2.SecilenYuzey = comboBoxYuzey.Text;
-            form2.SecilenDallanma = comboBoxDallanma.Text;
-            form2.SecilenCap = comboBoxcap.Text;
-            form2.SecilenNodyum = comboBoxNodyum.Text;
-
-            // Form2'yi açıyoruz
-            form2.Show();
+            public double Speed { get; set; }
         }
+
+        private string GetSecilenUzunluk()
+        {
+            return SecilenUzunluk;
+        }
+
 
         private void TürAra_Click(object sender, EventArgs e)
         {
@@ -184,6 +173,29 @@ namespace bitki_analiz_sistemi
                     MessageBox.Show($"Bir hata oluştu: {ex.Message}");
                 }
             }
+        }
+
+        private void Bilgiver_Click(object sender, EventArgs e)
+        {
+
+            // Bitki adını temizle, boşlukları ve fazladan karakterleri kaldır
+            string bitkiAdi = TürAdı.Text.Replace("Bulunan Bitki: ", "").Trim();
+            // Ekstra temizlik: birden fazla boşluğu tek boşluğa indir, alt tireyi boşlukla değiştir
+            bitkiAdi = System.Text.RegularExpressions.Regex.Replace(bitkiAdi, @"\s+", " ").Replace("_", " ");
+            // Debug: Gelen bitki adını göster
+            Form2 form2 = new Form2
+            {
+                SecilenBitkiAdi = bitkiAdi,
+                SecilenYuzey = comboBoxYuzey.Text,
+                SecilenDallanma = comboBoxDallanma.Text,
+                SecilenCap = comboBoxcap.Text,
+                SecilenNodyum = comboBoxNodyum.Text,
+                SecilenTuyDurumu = comboBoxTuyDurumu.Text,
+                secilenUzunluk = comboBoxUzunluk.Text,
+                SecilenDurus = comboBoxDurus.Text,
+                SecilenRenk = comboBoxRenk.Text
+            };
+            form2.Show();
         }
     }
 }
