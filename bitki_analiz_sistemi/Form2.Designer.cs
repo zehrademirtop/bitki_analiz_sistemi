@@ -149,7 +149,7 @@
             // 
             // pictureBoxBitki
             // 
-            this.pictureBoxBitki.Location = new System.Drawing.Point(200, 9);
+            this.pictureBoxBitki.Location = new System.Drawing.Point(210, 9);
             this.pictureBoxBitki.Name = "pictureBoxBitki";
             this.pictureBoxBitki.Size = new System.Drawing.Size(287, 320);
             this.pictureBoxBitki.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;

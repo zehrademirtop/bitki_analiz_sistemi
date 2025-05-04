@@ -21,6 +21,9 @@ namespace bitki_analiz_sistemi
         private string connectionString = @"Data Source=C:\Users\HP\Desktop\Bitkiler.db;Version=3;";
 
         public string SecilenUzunluk { get; private set; }
+        public string Uzunluk { get; private set; }
+        public string Durus { get; private set; }
+        public string Renk { get; private set; }
 
         public Form1()
         {
@@ -30,14 +33,14 @@ namespace bitki_analiz_sistemi
         private async void Form1_Load(object sender, EventArgs e)
         {
             await GetWeatherData(cityName);
-            comboBoxcap.Items.AddRange(new string[] { "boş", "1-3 mm", "2,5-5 mm" });
+            comboBoxcap.Items.AddRange(new string[] { "boş", "1-3 mm", "2,5-5 mm", "2 mm" });
             comboBoxTuyDurumu.Items.AddRange(new string[] { "boş", "Tüylü", "Tüysüz" });
             comboBoxYuzey.Items.AddRange(new string[] { "boş", "Tüylü", "Seyrek Tüylü", "Salgı Tüylü" });
             comboBoxDallanma.Items.AddRange(new string[] { "boş", "Tabanda Sık", "Tabanda Birkaç" });
             comboBoxNodyum.Items.AddRange(new string[] { "boş", "İnternodlar Kısa", "İnternodlar Belirgin" });
-            comboBoxUzunluk.Items.AddRange(new string[] { "boş" });
-            comboBoxDurus.Items.AddRange(new string[] { "boş" });
-            comboBoxRenk.Items.AddRange(new string[] { "boş" });
+            comboBoxUzunluk.Items.AddRange(new string[] { "boş", "50–70 cm", "80 cm", "50–80 cm" });
+            comboBoxDurus.Items.AddRange(new string[] { "boş", "Dik" });
+            comboBoxRenk.Items.AddRange(new string[] { "boş", "Açık Vişne", "Solgun Yeşil" });
         }
 
         private async Task GetWeatherData(string city)
@@ -114,53 +117,81 @@ namespace bitki_analiz_sistemi
 
         private async void TürAra_Click(object sender, EventArgs e)
         {
-            // Kullanıcı tarafından seçilen combobox değerlerini güvenli şekilde alıyoruz
+            // ComboBox'lardan seçilen değerleri al
             string cap = comboBoxcap.SelectedItem?.ToString() ?? "";
-            string TuyDurumu = comboBoxTuyDurumu.SelectedItem?.ToString() ?? "";
-            string Yuzey = comboBoxYuzey.SelectedItem?.ToString() ?? "";
-            string Dallanma = comboBoxDallanma.SelectedItem?.ToString() ?? "";
-            string Nodyum = comboBoxNodyum.SelectedItem?.ToString() ?? "";
+            string tuyDurumu = comboBoxTuyDurumu.SelectedItem?.ToString() ?? "";
+            string yuzey = comboBoxYuzey.SelectedItem?.ToString() ?? "";
+            string dallanma = comboBoxDallanma.SelectedItem?.ToString() ?? "";
+            string nodyum = comboBoxNodyum.SelectedItem?.ToString() ?? "";
+            string uzunluk = comboBoxUzunluk.SelectedItem?.ToString() ?? "";
+            string durus = comboBoxDurus.SelectedItem?.ToString() ?? "";
+            string renk = comboBoxRenk.SelectedItem?.ToString() ?? "";
 
-            // Tüm eşleşen bitkileri topla
+            // Eşleşen bitkileri topla
             List<string> bitkiAdlari = new List<string>();
 
-            // Hızlı eşleştirme kuralları
-            if (Yuzey == "Tüylü" || Yuzey == "Seyrek Tüylü")
-            {
-                bitkiAdlari.Add("Ankyropetalum arsusianum");
-            }
-            if (Dallanma == "Tabanda Sık" && cap == "1-3 mm" && Nodyum == "İnternodlar Kısa")
-            {
-                bitkiAdlari.Add("Ankyropetalum reuteri");
-            }
-            if (Dallanma == "Tabanda Birkaç" && cap == "2,5-5 mm" && Nodyum == "İnternodlar Belirgin")
-            {
-                bitkiAdlari.Add("Ankyropetalum gypsophiloides");
-            }
-
-            // Eğer seçim yapılmadan "Boş" gibi özel seçenekler seçildiyse, bunları SQL'de yokmuş gibi ele alalım
             using (SQLiteConnection connection = new SQLiteConnection(connectionString))
             {
                 try
                 {
                     connection.Open();
 
-                    // Esnek bir SQL sorgusu oluşturuyoruz, boş bırakılan combobox'ları dikkate almıyoruz
-                    string query = "SELECT * FROM Bitkiler WHERE 1=1";
+                    // Esnek SQL sorgusu: En az bir özellik eşleşirse bitkiyi getir
+                    string query = "SELECT DISTINCT BitkiAdi FROM Bitkiler WHERE 1=0";
+                    List<string> parameters = new List<string>();
 
-                    if (!string.IsNullOrWhiteSpace(cap)) query += " AND Cap = @cap";
-                    if (!string.IsNullOrWhiteSpace(TuyDurumu)) query += " AND TuyDurumu = @TuyDurumu";
-                    if (!string.IsNullOrWhiteSpace(Yuzey)) query += " AND Yuzey = @Yuzey";
-                    if (!string.IsNullOrWhiteSpace(Dallanma)) query += " AND Dallanma = @Dallanma";
-                    if (!string.IsNullOrWhiteSpace(Nodyum)) query += " AND Nodyum = @Nodyum";
+                    if (!string.IsNullOrWhiteSpace(cap) && cap != "boş")
+                    {
+                        query += " OR Cap = @cap";
+                        parameters.Add("@cap");
+                    }
+                    if (!string.IsNullOrWhiteSpace(tuyDurumu) && tuyDurumu != "boş")
+                    {
+                        query += " OR TuyDurumu = @tuyDurumu";
+                        parameters.Add("@tuyDurumu");
+                    }
+                    if (!string.IsNullOrWhiteSpace(yuzey) && yuzey != "boş")
+                    {
+                        query += " OR Yuzey LIKE '%' || @yuzey || '%'";
+                        parameters.Add("@yuzey");
+                    }
+                    if (!string.IsNullOrWhiteSpace(dallanma) && dallanma != "boş")
+                    {
+                        query += " OR Dallanma = @dallanma";
+                        parameters.Add("@dallanma");
+                    }
+                    if (!string.IsNullOrWhiteSpace(nodyum) && nodyum != "boş")
+                    {
+                        query += " OR Nodyum = @nodyum";
+                        parameters.Add("@nodyum");
+                    }
+                    if (!string.IsNullOrWhiteSpace(uzunluk) && uzunluk != "boş")
+                    {
+                        query += " OR Uzunluk = @uzunluk";
+                        parameters.Add("@uzunluk");
+                    }
+                    if (!string.IsNullOrWhiteSpace(durus) && durus != "boş")
+                    {
+                        query += " OR Durus = @durus";
+                        parameters.Add("@durus");
+                    }
+                    if (!string.IsNullOrWhiteSpace(renk) && renk != "boş")
+                    {
+                        query += " OR Renk = @renk";
+                        parameters.Add("@renk");
+                    }
 
                     SQLiteCommand command = new SQLiteCommand(query, connection);
 
-                    if (!string.IsNullOrWhiteSpace(cap)) command.Parameters.AddWithValue("@cap", cap);
-                    if (!string.IsNullOrWhiteSpace(TuyDurumu)) command.Parameters.AddWithValue("@TuyDurumu", TuyDurumu);
-                    if (!string.IsNullOrWhiteSpace(Yuzey)) command.Parameters.AddWithValue("@Yuzey", Yuzey);
-                    if (!string.IsNullOrWhiteSpace(Dallanma)) command.Parameters.AddWithValue("@Dallanma", Dallanma);
-                    if (!string.IsNullOrWhiteSpace(Nodyum)) command.Parameters.AddWithValue("@Nodyum", Nodyum);
+                    // Parametreleri ekle
+                    if (parameters.Contains("@cap")) command.Parameters.AddWithValue("@cap", cap);
+                    if (parameters.Contains("@tuyDurumu")) command.Parameters.AddWithValue("@tuyDurumu", tuyDurumu);
+                    if (parameters.Contains("@yuzey")) command.Parameters.AddWithValue("@yuzey", yuzey);
+                    if (parameters.Contains("@dallanma")) command.Parameters.AddWithValue("@dallanma", dallanma);
+                    if (parameters.Contains("@nodyum")) command.Parameters.AddWithValue("@nodyum", nodyum);
+                    if (parameters.Contains("@uzunluk")) command.Parameters.AddWithValue("@uzunluk", uzunluk);
+                    if (parameters.Contains("@durus")) command.Parameters.AddWithValue("@durus", durus);
+                    if (parameters.Contains("@renk")) command.Parameters.AddWithValue("@renk", renk);
 
                     SQLiteDataReader reader = command.ExecuteReader();
                     while (reader.Read())
@@ -232,3 +263,23 @@ namespace bitki_analiz_sistemi
         }
     }
 }
+//if (Yuzey == "Tüylü" || Yuzey == "Seyrek Tüylü")
+//{ss
+//    if (cap == "2 mm" && Renk == "Açık Vişne" && TuyDurumu == "Tüysüz" && Uzunluk == "50–70 cm" && Durus == "Dik")
+//    {
+//        bitkiAdlari.Add("Ankyropetalum arsusianum");
+//    }
+//}
+//if (Dallanma == "Tabanda Sık" && cap == "1-3 mm" && Nodyum == "İnternodlar Kısa")
+//{
+//    if (Renk == "Açık Vişne" && TuyDurumu == "Tüylü" && Uzunluk == "80 cm" && Durus == "Dik")
+//    {
+//        bitkiAdlari.Add("Ankyropetalum reuteri");
+//    }
+//}
+//if (Dallanma == "Tabanda Birkaç" && cap == "2,5-5 mm" && Nodyum == "İnternodlar Belirgin")
+//{
+//    if (Renk == "Solgun Yeşil" && Yuzey == "Tüylü" && Uzunluk == "50–80 cm")
+//    {
+//        bitkiAdlari.Add("Ankyropetalum gypsophiloides");
+//    }

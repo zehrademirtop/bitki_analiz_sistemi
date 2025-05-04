@@ -85,8 +85,10 @@ namespace bitki_analiz_sistemi
             listViewBilgiler.Items.Add(new ListViewItem(new string[] { "Dallanma", SecilenDallanma }));
             listViewBilgiler.Items.Add(new ListViewItem(new string[] { "Çap", SecilenCap }));
             listViewBilgiler.Items.Add(new ListViewItem(new string[] { "Nodyum", SecilenNodyum }));
-            listViewBilgiler.Items.Add(new ListViewItem(new string[] { "Renk", SecilenNodyum }));
-            listViewBilgiler.Items.Add(new ListViewItem(new string[] { "TüyDurumu", SecilenTüyDurumu }));
+            listViewBilgiler.Items.Add(new ListViewItem(new string[] { "Renk", SecilenRenk }));
+            listViewBilgiler.Items.Add(new ListViewItem(new string[] { "Tüy Durumu", SecilenTuyDurumu }));
+            listViewBilgiler.Items.Add(new ListViewItem(new string[] { "Uzunluk", secilenUzunluk }));
+            listViewBilgiler.Items.Add(new ListViewItem(new string[] { "Duruş", SecilenDurus }));
         }
 
         // 📌 Seçilen bitkiye göre resmi gösteren fonksiyon
@@ -200,6 +202,7 @@ namespace bitki_analiz_sistemi
                 }
                 MessageBox.Show(items, "Debug");
             }
+
 
             if (saveFile.ShowDialog() == DialogResult.OK)
             {
@@ -555,6 +558,7 @@ namespace bitki_analiz_sistemi
                 MessageBox.Show("Kaydetme sırasında hata oluştu: " + ex.Message, "Hata");
             }
         }
+
     }
 }
 
