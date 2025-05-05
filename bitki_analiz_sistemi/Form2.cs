@@ -187,23 +187,6 @@ namespace bitki_analiz_sistemi
                 }
             }
 
-            // ListView verisini debug et
-            if (listViewBilgiler.Items.Count == 0)
-            {
-                MessageBox.Show("ListView'de veri yok! Tablo boş.", "Debug");
-                return;
-            }
-            else
-            {
-                string items = "ListView Verisi:\n";
-                foreach (ListViewItem item in listViewBilgiler.Items)
-                {
-                    items += $"{item.SubItems[0].Text}: {item.SubItems[1].Text}\n";
-                }
-                MessageBox.Show(items, "Debug");
-            }
-
-
             if (saveFile.ShowDialog() == DialogResult.OK)
             {
                 try
@@ -558,7 +541,6 @@ namespace bitki_analiz_sistemi
                 MessageBox.Show("Kaydetme sırasında hata oluştu: " + ex.Message, "Hata");
             }
         }
-
     }
 }
 

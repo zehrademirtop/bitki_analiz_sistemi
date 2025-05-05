@@ -41,6 +41,26 @@ namespace bitki_analiz_sistemi
             comboBoxUzunluk.Items.AddRange(new string[] { "boş", "50–70 cm", "80 cm", "50–80 cm" });
             comboBoxDurus.Items.AddRange(new string[] { "boş", "Dik" });
             comboBoxRenk.Items.AddRange(new string[] { "boş", "Açık Vişne", "Solgun Yeşil" });
+            // ComboBox'ların SelectedIndexChanged olaylarını bağla
+            comboBoxcap.SelectedIndexChanged += ComboBox_Changed;
+            comboBoxTuyDurumu.SelectedIndexChanged += ComboBox_Changed;
+            comboBoxYuzey.SelectedIndexChanged += ComboBox_Changed;
+            comboBoxDallanma.SelectedIndexChanged += ComboBox_Changed;
+            comboBoxNodyum.SelectedIndexChanged += ComboBox_Changed;
+            comboBoxUzunluk.SelectedIndexChanged += ComboBox_Changed;
+            comboBoxDurus.SelectedIndexChanged += ComboBox_Changed;
+            comboBoxRenk.SelectedIndexChanged += ComboBox_Changed;
+        }
+
+        private void ComboBox_Changed(object sender, EventArgs e)
+        {
+            var comboBox = sender as ComboBox;
+            if (comboBox != null)
+            {
+                string selectedItem = comboBox.SelectedItem?.ToString();
+                // Add logic to handle the selected item  
+               
+            }
         }
 
         private async Task GetWeatherData(string city)
@@ -117,6 +137,10 @@ namespace bitki_analiz_sistemi
 
         private async void TürAra_Click(object sender, EventArgs e)
         {
+            GuncelleTurAdi();
+        }
+        private void GuncelleTurAdi()
+        {
             // ComboBox'lardan seçilen değerleri al
             string cap = comboBoxcap.SelectedItem?.ToString() ?? "";
             string tuyDurumu = comboBoxTuyDurumu.SelectedItem?.ToString() ?? "";
@@ -152,7 +176,7 @@ namespace bitki_analiz_sistemi
                     }
                     if (!string.IsNullOrWhiteSpace(yuzey) && yuzey != "boş")
                     {
-                        query += " OR Yuzey LIKE '%' || @yuzey || '%'";
+                        query += " OR Yuzey = @yuzey OR Yuzey LIKE @yuzey || ',%' OR Yuzey LIKE '%,' || @yuzey || ',%' OR Yuzey LIKE '%,' || @yuzey";
                         parameters.Add("@yuzey");
                     }
                     if (!string.IsNullOrWhiteSpace(dallanma) && dallanma != "boş")
@@ -260,6 +284,11 @@ namespace bitki_analiz_sistemi
             {
                 labelMensei.Text = "Menşei: Bilinmiyor";
             }
+        }
+
+        private void label7_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
