@@ -15,16 +15,12 @@ using System.Net.Http;
 using Newtonsoft.Json;
 using System.Data.SqlClient;
 using System.Data.SQLite;
-
-
-
 namespace bitki_analiz_sistemi
 {
     public partial class Form2 : Form
     {
         internal string secilenUzunluk;
         private string sonPdfYolu;
-
         public string SecilenBitkiAdi { get; set; }
         public string SecilenYuzey { get; set; }
         public string SecilenDallanma { get; set; }
@@ -36,13 +32,11 @@ namespace bitki_analiz_sistemi
         public string SecilenTuyDurumu { get; internal set; }
         public string SecilenDurus { get; internal set; }
         public string SecilenRenk { get; internal set; }
-
         public Form2()
         {
 
             InitializeComponent();
         }
-
         private void btnGiris_Click(object sender, EventArgs e)
         {
             string dogruKullaniciAdi = "admin";
@@ -68,13 +62,11 @@ namespace bitki_analiz_sistemi
                 txtSifre.Focus();
             }
         }
-
         // 📌 Giriş bilgilerini kontrol eden fonksiyon
         private bool IsGirisDogru(string girilenKullaniciAdi, string girilenSifre, string dogruKullaniciAdi, string dogruSifre)
         {
             return girilenKullaniciAdi.Equals(dogruKullaniciAdi, StringComparison.OrdinalIgnoreCase) && girilenSifre == dogruSifre;
         }
-
         // 📌 ListView'e verileri eklemek için fonksiyon
         private void GuncelleListView()
         {
@@ -90,7 +82,6 @@ namespace bitki_analiz_sistemi
             listViewBilgiler.Items.Add(new ListViewItem(new string[] { "Uzunluk", secilenUzunluk }));
             listViewBilgiler.Items.Add(new ListViewItem(new string[] { "Duruş", SecilenDurus }));
         }
-
         // 📌 Seçilen bitkiye göre resmi gösteren fonksiyon
         private void ShowBitkiImage(string bitkiAdi)
         {
@@ -100,7 +91,6 @@ namespace bitki_analiz_sistemi
                 MessageBox.Show("Bitki adı boş!", "Debug");
                 return;
             }
-
             // Resim dosya adlarını bitki adlarıyla eşleştir, alternatif adlar ekle
             var resimEslestirme = new Dictionary<string, string>
             {
@@ -109,13 +99,9 @@ namespace bitki_analiz_sistemi
                 { "Ankyropetalum reuteri", "Ankyropetalum_reuteri.png" },
                 { "Ankyropetalum gypsophiloides", "Ankyropetalum_gypsophiloides.png" }
             };
-
             string resimKlasoru = Path.Combine(Application.StartupPath, "resimler");
             string resimDosyaAdi = resimEslestirme.ContainsKey(bitkiAdi) ? resimEslestirme[bitkiAdi] : $"{bitkiAdi.Replace(" ", "_")}.png";
             string resimYolu = Path.Combine(resimKlasoru, resimDosyaAdi);
-
-          
-
             try
             {
                 if (File.Exists(resimYolu))
@@ -135,11 +121,9 @@ namespace bitki_analiz_sistemi
                 MessageBox.Show($"Resim yüklenirken hata: {ex.Message}\nYol: {resimYolu}\nBitki Adı: {bitkiAdi}", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
         private void Form2_Load(object sender, EventArgs e)
         {
             listViewBilgiler.Items.Clear(); // Açılınca temizle
-
             // Eğer sütunlar otomatik olarak eklenmiyorsa:
             listViewBilgiler.Columns.Clear();
             listViewBilgiler.View = View.Details; // Detay görünümü olsun
@@ -153,28 +137,26 @@ namespace bitki_analiz_sistemi
             {
                 Filter = "PDF Dosyaları|*.pdf",
                 Title = "PDF Dosyası Kaydet",
-                FileName = "BitkiBilgileri_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".pdf" // Benzersiz dosya adı
+                FileName = "BitkiBilgileri.pdf" // sabit isim kullanıldı
             };
 
-            string logoYolu = @"C:\Users\HP\Desktop\images1.png"; // Logo dosya yolu
-            string resimKlasoru = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "resimler"); // Mutlak yol
+            string logoYolu = @"C:\Users\HP\Desktop\images1.png";
+            string resimKlasoru = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "resimler");
+
             if (string.IsNullOrEmpty(SecilenBitkiAdi))
             {
                 MessageBox.Show("Seçilen bitki adı boş!", "Hata");
                 return;
             }
 
-            // SecilenBitkiAdi’yi temizle
             string temizBitkiAdi = SecilenBitkiAdi
-                .Trim() // Baştaki/sondaki boşlukları sil
-                .Replace(" ", "_") // Boşlukları _ ile değiştir
-                .Replace("__", "_"); // Çift _’yi tek yap
+                .Trim()
+                .Replace(" ", "_")
+                .Replace("__", "_");
             string bitkiResimYolu = Path.Combine(resimKlasoru, $"{temizBitkiAdi}.png");
 
-            // Dosya var mı kontrol et
             if (!File.Exists(bitkiResimYolu))
             {
-                // Büyük-küçük harf duyarlılığını atla
                 string[] resimDosyalari = Directory.GetFiles(resimKlasoru, "*.png", SearchOption.TopDirectoryOnly);
                 foreach (string dosya in resimDosyalari)
                 {
@@ -193,22 +175,21 @@ namespace bitki_analiz_sistemi
                 {
                     using (FileStream stream = new FileStream(saveFile.FileName, FileMode.Create, FileAccess.Write, FileShare.None))
                     {
-                        Document document = new Document(PageSize.A4, 50, 50, 100, 50); // Üst boşluk
+                        Document document = new Document(PageSize.A4, 50, 50, 100, 50);
                         PdfWriter writer = PdfWriter.GetInstance(document, stream);
                         document.Open();
 
-                        // Türkçe Karakterler İçin Font Ayarı
                         BaseFont baseFont = BaseFont.CreateFont(@"C:\Windows\Fonts\arial.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-                        iTextSharp.text.Font baslikFont = new iTextSharp.text.Font(baseFont, 14, iTextSharp.text.Font.BOLD); // Başlık fontu
-                        iTextSharp.text.Font kalinFont = new iTextSharp.text.Font(baseFont, 12, iTextSharp.text.Font.BOLD); // Kalın font
-                        iTextSharp.text.Font normalFont = new iTextSharp.text.Font(baseFont, 12, iTextSharp.text.Font.NORMAL); // Normal font
+                        iTextSharp.text.Font baslikFont = new iTextSharp.text.Font(baseFont, 14, iTextSharp.text.Font.BOLD);
+                        iTextSharp.text.Font kalinFont = new iTextSharp.text.Font(baseFont, 12, iTextSharp.text.Font.BOLD);
+                        iTextSharp.text.Font normalFont = new iTextSharp.text.Font(baseFont, 12, iTextSharp.text.Font.NORMAL);
+                        iTextSharp.text.Font yeniFont = new iTextSharp.text.Font(baseFont, 16, iTextSharp.text.Font.NORMAL);
 
-                        // LOGO EKLEME (Sol Üst Köşe)
                         if (File.Exists(logoYolu))
                         {
                             iTextSharp.text.Image logo = iTextSharp.text.Image.GetInstance(logoYolu);
-                            logo.ScaleAbsolute(70, 70); // Daha küçük logo
-                            logo.SetAbsolutePosition(50, PageSize.A4.Height - 70); // Sol üst
+                            logo.ScaleAbsolute(70, 70);
+                            logo.SetAbsolutePosition(50, PageSize.A4.Height - 70);
                             document.Add(logo);
                         }
                         else
@@ -216,54 +197,69 @@ namespace bitki_analiz_sistemi
                             MessageBox.Show("Logo bulunamadı! Devam ediliyor...", "Uyarı", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         }
 
-                        // "Iğdır Üniversitesi" YAZISI (Sağ Üst Köşe)
-                        ColumnText.ShowTextAligned(writer.DirectContent, Element.ALIGN_RIGHT, new Phrase("IĞDIR ÜNİVERSİTESİ", normalFont), PageSize.A4.Width - 50, PageSize.A4.Height - 60, 0);
+                        // "IĞDIR ÜNİVERSİTESİ" yazısını sayfanın tam ortasında konumlandırıyoruz
+                        string text = "IĞDIR ÜNİVERSİTESİ";
 
-                        // BİTKİ RESMİ EKLEME (Tablonun üstünde, yatay ortalı, sabit)
+                        // Font'u ve Phrase'i oluşturuyoruz
+                        Phrase phrase = new Phrase(text, yeniFont);
+
+                        // ColumnText sınıfı ile yazının genişliğini hesaplıyoruz
+                        float textWidth = ColumnText.GetWidth(phrase);  // Bu satırda statik metodu doğru bir şekilde çağırıyoruz
+
+                        // x konumunu hesaplıyoruz
+                        float xPosition = (PageSize.A4.Width - textWidth) / 2; // Yazıyı tam ortalamak için gerekli x konumunu hesaplıyoruz
+
+                        // Ortalanmış şekilde yazıyı ekliyoruz
+                        ColumnText.ShowTextAligned(writer.DirectContent, Element.ALIGN_LEFT, phrase, xPosition, PageSize.A4.Height - 40, 0);
+
                         if (File.Exists(bitkiResimYolu))
                         {
                             iTextSharp.text.Image bitkiResim = iTextSharp.text.Image.GetInstance(bitkiResimYolu);
-                            bitkiResim.ScaleAbsolute(180, 180); // Resim boyutu
-                            float x = (PageSize.A4.Width - bitkiResim.ScaledWidth) / 2; // Yatay ortalı
-                            float y = PageSize.A4.Height - 250; // Sayfanın üstünden 250 birim aşağı
+                            bitkiResim.ScaleAbsolute(250, 250);
+                            float x = (PageSize.A4.Width - bitkiResim.ScaledWidth) / 2;
+                            float y = PageSize.A4.Height - 385; // Resim biraz daha aşağıda
                             bitkiResim.SetAbsolutePosition(x, y);
                             document.Add(bitkiResim);
+
+                            // Bitki adı tam sol üst köşede, resmin üstünden 10 birim yukarıda
+                            string bitkiAdi = SecilenBitkiAdi.ToUpper();
+                            iTextSharp.text.Font bitkiAdiFont = new iTextSharp.text.Font(baseFont, 9, iTextSharp.text.Font.BOLD);
+
+                            float bitkiAdiX = 36f; // Sol boşluk
+                            float bitkiAdiY = y + bitkiResim.ScaledHeight + 7; // 10 birim boşluk eklendi
+
+                            ColumnText.ShowTextAligned(writer.DirectContent, Element.ALIGN_LEFT, new Phrase(bitkiAdi, bitkiAdiFont), bitkiAdiX, bitkiAdiY, 0);
                         }
                         else
                         {
                             MessageBox.Show($"Bitki resmi bulunamadı: {bitkiResimYolu}! Devam ediliyor...", "Uyarı", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         }
 
-                        // "Bitki Bilgileri" YAZISI (Tablonun sol üst köşesinde)
-                        ColumnText.ShowTextAligned(writer.DirectContent, Element.ALIGN_LEFT, new Phrase("Bitki Bilgileri", baslikFont), 50, 550, 0);
 
-                        // TABLO OLUŞTURMA (Resmin altında, sayfanın alt kısmında, mutlak konum)
-                        PdfPTable table = new PdfPTable(2) // 2 sütun: Özellik ve Değer
+                        PdfPTable table = new PdfPTable(2)
                         {
-                            WidthPercentage = 100 // Tabloyu sayfaya yay
+                            WidthPercentage = 100
                         };
                         table.DefaultCell.Padding = 4;
                         table.DefaultCell.HorizontalAlignment = Element.ALIGN_LEFT;
 
-                        // Sütun Başlıkları (Kalın)
                         table.AddCell(new Phrase("Özellik", kalinFont));
                         table.AddCell(new Phrase("Değer", kalinFont));
 
-                        // ListView'den Satırları Ekle
                         foreach (ListViewItem item in listViewBilgiler.Items)
                         {
-                            table.AddCell(new Phrase(item.SubItems[0].Text, kalinFont)); // Özellik: Kalın
-                            table.AddCell(new Phrase(item.SubItems[1].Text, normalFont)); // Değer: Normal
+                            table.AddCell(new Phrase(item.SubItems[0].Text, kalinFont));
+                            table.AddCell(new Phrase(item.SubItems[1].Text, normalFont));
                         }
 
-                        // Tabloyu mutlak konuma sabitle (resmin altına, sayfanın alt kısmı)
-                        table.TotalWidth = PageSize.A4.Width - 100; // Kenar boşlukları için
-                        table.WriteSelectedRows(0, -1, 50, 540, writer.DirectContent); // y=400 (~450-550 aralığı)
-
+                        table.TotalWidth = PageSize.A4.Width - 100;
+                        table.WriteSelectedRows(0, -1, 50, PageSize.A4.Height - 415, writer.DirectContent);
                         document.Close();
                     }
 
-                    sonPdfYolu = saveFile.FileName; // PDF yolunu kaydet
+                    // Son oluşturulan PDF dosyasının yolu her zaman güncelleniyor
+                    sonPdfYolu = saveFile.FileName;
+
                     MessageBox.Show("PDF başarıyla oluşturuldu!", "Bilgi", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 catch (Exception ex)
@@ -271,15 +267,15 @@ namespace bitki_analiz_sistemi
                     MessageBox.Show($"PDF oluşturulurken hata oluştu: {ex.Message}", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
-        }
 
+        }
         private void btnPdfGoster_Click(object sender, EventArgs e)
         {
             if (!string.IsNullOrEmpty(sonPdfYolu) && File.Exists(sonPdfYolu))
             {
                 try
                 {
-                    System.Diagnostics.Process.Start(sonPdfYolu); // PDF’yi varsayılan görüntüleyicide aç
+                    System.Diagnostics.Process.Start(sonPdfYolu);
                 }
                 catch (Exception ex)
                 {
@@ -291,7 +287,6 @@ namespace bitki_analiz_sistemi
                 MessageBox.Show("PDF dosyası bulunamadı! Lütfen önce PDF oluşturun.", "Uyarı", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
-
         private void btnSil_Click(object sender, EventArgs e)
         {
             if (listViewBilgiler.SelectedItems.Count > 0)
@@ -306,24 +301,20 @@ namespace bitki_analiz_sistemi
                         MessageBox.Show("ListView'de yeterli sütun yok. En az 2 sütun olmalı.", "Hata");
                         return;
                     }
-
                     // SubItems[1] olduğundan emin ol
                     if (selected.SubItems.Count < 2)
                     {
                         MessageBox.Show("Seçili satırda değer sütunu eksik.", "Hata");
                         return;
                     }
-
                     // Sadece Değer sütununu delete et (boş yap)
                     selected.SubItems[1].Text = "";
-
                     // ListView'i yenile
                     listViewBilgiler.BeginUpdate();
                     listViewBilgiler.Refresh();
                     listViewBilgiler.Invalidate();
                     listViewBilgiler.Update();
                     listViewBilgiler.EndUpdate();
-
                     MessageBox.Show("Değer başarıyla delete edildi! 🎉", "Başarı");
                 }
                 catch (ArgumentOutOfRangeException)
@@ -342,7 +333,6 @@ namespace bitki_analiz_sistemi
                 MessageBox.Show("Lütfen delete etmek için bir kayıt seçin.", "Uyarı");
             }
         }
-
         private void btnGuncelle_Click(object sender, EventArgs e)
         {
             if (listViewBilgiler.SelectedItems.Count > 0)
@@ -357,17 +347,14 @@ namespace bitki_analiz_sistemi
                         MessageBox.Show("ListView'de yeterli sütun yok. En az 2 sütun olmalı.", "Hata");
                         return;
                     }
-
                     // SubItems[1] olduğundan emin ol
                     if (selected.SubItems.Count < 2)
                     {
                         MessageBox.Show("Seçili satırda değer sütunu eksik.", "Hata");
                         return;
                     }
-
                     // Seçili satırın özelliğini al (Özellik sütunu)
                     string ozellik = selected.SubItems[0].Text;
-
                     // Özelliğe göre doğru TextBox'tan değeri al
                     string newValue = selected.SubItems[1].Text; // Varsayılan olarak mevcut değeri koru
                     switch (ozellik)
@@ -400,7 +387,6 @@ namespace bitki_analiz_sistemi
                             newValue = txtDurus.Text;
                             break;
                     }
-
                     // Yeni değeri update et
                     selected.SubItems[1].Text = string.IsNullOrEmpty(newValue) ? selected.SubItems[1].Text : newValue;
                     // ListView'i yenile
@@ -420,7 +406,6 @@ namespace bitki_analiz_sistemi
                     MessageBox.Show("Güncelleme sırasında hata oluştu: " + ex.Message, "Hata");
                     return;
                 }
-
                 MessageBox.Show("Değer başarıyla update edildi! 🎉", "Başarı");
             }
             else
@@ -428,7 +413,6 @@ namespace bitki_analiz_sistemi
                 MessageBox.Show("Lütfen update etmek için bir kayıt seçin.", "Uyarı");
             }
         }
-
         private void btnEkle_Click(object sender, EventArgs e)
         {
             try
@@ -452,14 +436,12 @@ namespace bitki_analiz_sistemi
                     listViewBilgiler.Items.Add(new ListViewItem(new string[] { "Renk", txtRenk.Text }));
                 if (!string.IsNullOrEmpty(txtDurus.Text))
                     listViewBilgiler.Items.Add(new ListViewItem(new string[] { "Duruş", txtDurus.Text }));
-
                 // ListView'i yenile
                 listViewBilgiler.BeginUpdate();
                 listViewBilgiler.Refresh();
                 listViewBilgiler.Invalidate();
                 listViewBilgiler.Update();
                 listViewBilgiler.EndUpdate();
-
                 // TextBox'ları temizle
                 txtBitkiAdi.Clear();
                 txtYuzey.Clear();
@@ -470,7 +452,6 @@ namespace bitki_analiz_sistemi
                 txtUzunluk.Clear();
                 txtRenk.Clear();
                 txtDurus.Clear();
-
                 MessageBox.Show("Değerler başarıyla add edildi! 🌱", "Başarı");
             }
             catch (Exception ex)
@@ -478,7 +459,6 @@ namespace bitki_analiz_sistemi
                 MessageBox.Show("Ekleme sırasında hata oluştu: " + ex.Message, "Hata");
             }
         }
-
         private void btnKaydet_Click(object sender, EventArgs e)
         {
             try
@@ -492,10 +472,8 @@ namespace bitki_analiz_sistemi
                         MessageBox.Show("Bir satırda değer sütunu eksik.", "Hata");
                         return;
                     }
-
                     // Özelliği al
                     string ozellik = item.SubItems[0].Text;
-
                     // Eğer Değer kısmı boşsa, ilgili TextBox'tan yeni değeri al
                     if (string.IsNullOrEmpty(item.SubItems[1].Text))
                     {
@@ -516,14 +494,12 @@ namespace bitki_analiz_sistemi
                         item.SubItems[1].Text = string.IsNullOrEmpty(newValue) ? item.SubItems[1].Text : newValue;
                     }
                 }
-
                 // ListView'i yenile
                 listViewBilgiler.BeginUpdate();
                 listViewBilgiler.Refresh();
                 listViewBilgiler.Invalidate();
                 listViewBilgiler.Update();
                 listViewBilgiler.EndUpdate();
-
                 // Güncellenmiş verileri JSON'a kaydet
                 var veriler = new List<KeyValuePair<string, string>>();
                 foreach (ListViewItem item in listViewBilgiler.Items)
@@ -533,7 +509,6 @@ namespace bitki_analiz_sistemi
                 string json = JsonConvert.SerializeObject(veriler, Formatting.Indented);
                 string dosyaYolu = Path.Combine(Application.StartupPath, "bitki_verileri.json");
                 File.WriteAllText(dosyaYolu, json);
-
                 MessageBox.Show("Veriler başarıyla save edildi! 💾", "Başarı");
             }
             catch (Exception ex)

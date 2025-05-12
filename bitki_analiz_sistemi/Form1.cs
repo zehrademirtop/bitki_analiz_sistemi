@@ -19,23 +19,20 @@ namespace bitki_analiz_sistemi
         private readonly HttpClient _httpClient = new HttpClient();
         private const string menseiApiUrl = "https://localhost:7219/api/mensei"; // API portu doğru
         private string connectionString = @"Data Source=C:\Users\HP\Desktop\Bitkiler.db;Version=3;";
-
         public string SecilenUzunluk { get; private set; }
         public string Uzunluk { get; private set; }
         public string Durus { get; private set; }
         public string Renk { get; private set; }
-
         public Form1()
         {
             InitializeComponent();
         }
-
         private async void Form1_Load(object sender, EventArgs e)
         {
             await GetWeatherData(cityName);
             comboBoxcap.Items.AddRange(new string[] { "boş", "1-3 mm", "2,5-5 mm", "2 mm" });
             comboBoxTuyDurumu.Items.AddRange(new string[] { "boş", "Tüylü", "Tüysüz" });
-            comboBoxYuzey.Items.AddRange(new string[] { "boş", "Tüylü", "Seyrek Tüylü", "Salgı Tüylü" });
+            comboBoxYuzey.Items.AddRange(new string[] { "boş", "Tüylü", "Salgı Tüylü" });
             comboBoxDallanma.Items.AddRange(new string[] { "boş", "Tabanda Sık", "Tabanda Birkaç" });
             comboBoxNodyum.Items.AddRange(new string[] { "boş", "İnternodlar Kısa", "İnternodlar Belirgin" });
             comboBoxUzunluk.Items.AddRange(new string[] { "boş", "50–70 cm", "80 cm", "50–80 cm" });
@@ -51,7 +48,6 @@ namespace bitki_analiz_sistemi
             comboBoxDurus.SelectedIndexChanged += ComboBox_Changed;
             comboBoxRenk.SelectedIndexChanged += ComboBox_Changed;
         }
-
         private void ComboBox_Changed(object sender, EventArgs e)
         {
             var comboBox = sender as ComboBox;
@@ -62,7 +58,6 @@ namespace bitki_analiz_sistemi
                
             }
         }
-
         private async Task GetWeatherData(string city)
         {
             string apiKey = "fafc3e9f50a6e2dfd4b249e972a4fe8a"; // OpenWeatherMap API Anahtarını buraya ekle
@@ -88,7 +83,6 @@ namespace bitki_analiz_sistemi
                 }
             }
         }
-
         // API'den gelen veriyi deserialize edebilmek için sınıf oluşturuyoruz
         public class WeatherResponse
         {
@@ -97,17 +91,14 @@ namespace bitki_analiz_sistemi
             public List<WeatherDescription> Weather { get; set; }
             public Wind Wind { get; set; }
         }
-
         public class MainWeather
         {
             public double Temp { get; set; }
         }
-
         public class WeatherDescription
         {
             public string Description { get; set; }
         }
-
         public class Wind
         {
             public double Speed { get; set; }
@@ -128,13 +119,11 @@ namespace bitki_analiz_sistemi
                 return "Bilinmiyor";
             }
         }
-
         public class BitkiMensei
         {
             public string Bitki { get; set; }
             public string Mensei { get; set; }
         }
-
         private async void TürAra_Click(object sender, EventArgs e)
         {
             GuncelleTurAdi();
@@ -150,10 +139,8 @@ namespace bitki_analiz_sistemi
             string uzunluk = comboBoxUzunluk.SelectedItem?.ToString() ?? "";
             string durus = comboBoxDurus.SelectedItem?.ToString() ?? "";
             string renk = comboBoxRenk.SelectedItem?.ToString() ?? "";
-
             // Eşleşen bitkileri topla
             List<string> bitkiAdlari = new List<string>();
-
             using (SQLiteConnection connection = new SQLiteConnection(connectionString))
             {
                 try
@@ -163,7 +150,6 @@ namespace bitki_analiz_sistemi
                     // Esnek SQL sorgusu: En az bir özellik eşleşirse bitkiyi getir
                     string query = "SELECT DISTINCT BitkiAdi FROM Bitkiler WHERE 1=0";
                     List<string> parameters = new List<string>();
-
                     if (!string.IsNullOrWhiteSpace(cap) && cap != "boş")
                     {
                         query += " OR Cap = @cap";
@@ -204,9 +190,7 @@ namespace bitki_analiz_sistemi
                         query += " OR Renk = @renk";
                         parameters.Add("@renk");
                     }
-
                     SQLiteCommand command = new SQLiteCommand(query, connection);
-
                     // Parametreleri ekle
                     if (parameters.Contains("@cap")) command.Parameters.AddWithValue("@cap", cap);
                     if (parameters.Contains("@tuyDurumu")) command.Parameters.AddWithValue("@tuyDurumu", tuyDurumu);
@@ -215,8 +199,8 @@ namespace bitki_analiz_sistemi
                     if (parameters.Contains("@nodyum")) command.Parameters.AddWithValue("@nodyum", nodyum);
                     if (parameters.Contains("@uzunluk")) command.Parameters.AddWithValue("@uzunluk", uzunluk);
                     if (parameters.Contains("@durus")) command.Parameters.AddWithValue("@durus", durus);
-                    if (parameters.Contains("@renk")) command.Parameters.AddWithValue("@renk", renk);
-
+                    if (parameters.Contains("@ren" +
+                        "k")) command.Parameters.AddWithValue("@renk", renk);
                     SQLiteDataReader reader = command.ExecuteReader();
                     while (reader.Read())
                     {
@@ -234,7 +218,6 @@ namespace bitki_analiz_sistemi
                     bitkiAdlari.Add("Hata oluştu.");
                 }
             }
-
             // comboBoxTurAdi’yı güncelle
             comboBoxTurAdi.Items.Clear();
             if (bitkiAdlari.Count > 0)
@@ -249,7 +232,6 @@ namespace bitki_analiz_sistemi
                 labelMensei.Text = "Menşei: Bilinmiyor";
             }
         }
-
         private void Bilgiver_Click(object sender, EventArgs e)
         {
 
@@ -272,7 +254,6 @@ namespace bitki_analiz_sistemi
             };
             form2.Show();
         }
-
         private async void comboBoxTurAdi_SelectedIndexChanged(object sender, EventArgs e)
         {
             string secilenBitki = comboBoxTurAdi.SelectedItem?.ToString();
@@ -285,14 +266,13 @@ namespace bitki_analiz_sistemi
                 labelMensei.Text = "Menşei: Bilinmiyor";
             }
         }
-
         private void label7_Click(object sender, EventArgs e)
         {
 
         }
     }
 }
-//if (Yuzey == "Tüylü" || Yuzey == "Seyrek Tüylü")
+//if (Yuzey == "Tüylü")
 //{ss
 //    if (cap == "2 mm" && Renk == "Açık Vişne" && TuyDurumu == "Tüysüz" && Uzunluk == "50–70 cm" && Durus == "Dik")
 //    {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.Sqlite; // BU çok önemli
+using Microsoft.Data.Sqlite; 
 using System;
 using System.Threading.Tasks;
 

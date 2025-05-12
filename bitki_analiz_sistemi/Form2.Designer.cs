@@ -118,13 +118,16 @@
             // 
             // btnGiris
             // 
-            this.btnGiris.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.btnGiris.Location = new System.Drawing.Point(29, 128);
+            this.btnGiris.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.btnGiris.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.btnGiris.ForeColor = System.Drawing.Color.ForestGreen;
+            this.btnGiris.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnGiris.Location = new System.Drawing.Point(10, 126);
             this.btnGiris.Name = "btnGiris";
-            this.btnGiris.Size = new System.Drawing.Size(113, 24);
+            this.btnGiris.Size = new System.Drawing.Size(171, 36);
             this.btnGiris.TabIndex = 5;
-            this.btnGiris.Text = "Giriş";
-            this.btnGiris.UseVisualStyleBackColor = true;
+            this.btnGiris.Text = "GİRİŞ";
+            this.btnGiris.UseVisualStyleBackColor = false;
             this.btnGiris.Click += new System.EventHandler(this.btnGiris_Click);
             // 
             // listViewBilgiler
@@ -400,7 +403,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.BackgroundImage = global::bitki_analiz_sistemi.Properties.Resources.istockphoto_504616634_612x6123;
+            this.BackgroundImage = global::bitki_analiz_sistemi.Properties.Resources.istockphoto_504616634_612x6124;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(1090, 660);
             this.Controls.Add(this.BitkiAdi);
