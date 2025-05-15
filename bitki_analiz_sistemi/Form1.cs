@@ -130,7 +130,6 @@ namespace bitki_analiz_sistemi
         }
         private void GuncelleTurAdi()
         {
-            // ComboBox'lardan seçilen değerleri al
             string cap = comboBoxcap.SelectedItem?.ToString() ?? "";
             string tuyDurumu = comboBoxTuyDurumu.SelectedItem?.ToString() ?? "";
             string yuzey = comboBoxYuzey.SelectedItem?.ToString() ?? "";
@@ -139,78 +138,88 @@ namespace bitki_analiz_sistemi
             string uzunluk = comboBoxUzunluk.SelectedItem?.ToString() ?? "";
             string durus = comboBoxDurus.SelectedItem?.ToString() ?? "";
             string renk = comboBoxRenk.SelectedItem?.ToString() ?? "";
-            // Eşleşen bitkileri topla
+
+            List<string> conditions = new List<string>();
+            List<SQLiteParameter> parameters = new List<SQLiteParameter>();
+
+            // Filtre varsa WHERE şartlarına ekle
+            if (!string.IsNullOrWhiteSpace(cap) && cap != "boş")
+            {
+                conditions.Add("Cap = @cap");
+                parameters.Add(new SQLiteParameter("@cap", cap));
+            }
+            if (!string.IsNullOrWhiteSpace(tuyDurumu) && tuyDurumu != "boş")
+            {
+                conditions.Add("TuyDurumu = @tuyDurumu");
+                parameters.Add(new SQLiteParameter("@tuyDurumu", tuyDurumu));
+            }
+            if (!string.IsNullOrWhiteSpace(yuzey) && yuzey != "boş")
+            {
+                // Yüzey içinde arama (örnek: "Tüylü" yüzey olanlar)
+                conditions.Add("(Yuzey = @yuzey OR Yuzey LIKE @yuzeyLike1 OR Yuzey LIKE @yuzeyLike2 OR Yuzey LIKE @yuzeyLike3)");
+                parameters.Add(new SQLiteParameter("@yuzey", yuzey));
+                parameters.Add(new SQLiteParameter("@yuzeyLike1", yuzey + ",%"));
+                parameters.Add(new SQLiteParameter("@yuzeyLike2", "%," + yuzey + ",%"));
+                parameters.Add(new SQLiteParameter("@yuzeyLike3", "%," + yuzey));
+            }
+            if (!string.IsNullOrWhiteSpace(dallanma) && dallanma != "boş")
+            {
+                conditions.Add("Dallanma = @dallanma");
+                parameters.Add(new SQLiteParameter("@dallanma", dallanma));
+            }
+            if (!string.IsNullOrWhiteSpace(nodyum) && nodyum != "boş")
+            {
+                conditions.Add("Nodyum = @nodyum");
+                parameters.Add(new SQLiteParameter("@nodyum", nodyum));
+            }
+            if (!string.IsNullOrWhiteSpace(uzunluk) && uzunluk != "boş")
+            {
+                conditions.Add("Uzunluk = @uzunluk");
+                parameters.Add(new SQLiteParameter("@uzunluk", uzunluk));
+            }
+            if (!string.IsNullOrWhiteSpace(durus) && durus != "boş")
+            {
+                conditions.Add("Durus = @durus");
+                parameters.Add(new SQLiteParameter("@durus", durus));
+            }
+            if (!string.IsNullOrWhiteSpace(renk) && renk != "boş")
+            {
+                conditions.Add("Renk = @renk");
+                parameters.Add(new SQLiteParameter("@renk", renk));
+            }
+
+            string whereClause = "";
+            if (conditions.Count > 0)
+            {
+                whereClause = "WHERE " + string.Join(" OR ", conditions);
+            }
+            else
+            {
+                // Hiç filtre yoksa tüm bitkileri getir (dikkat: çok sayıda sonuç olabilir)
+                whereClause = "";
+            }
+
             List<string> bitkiAdlari = new List<string>();
+
             using (SQLiteConnection connection = new SQLiteConnection(connectionString))
             {
                 try
                 {
                     connection.Open();
-
-                    // Esnek SQL sorgusu: En az bir özellik eşleşirse bitkiyi getir
-                    string query = "SELECT DISTINCT BitkiAdi FROM Bitkiler WHERE 1=0";
-                    List<string> parameters = new List<string>();
-                    if (!string.IsNullOrWhiteSpace(cap) && cap != "boş")
+                    string query = $"SELECT DISTINCT BitkiAdi FROM Bitkiler {whereClause}";
+                    using (SQLiteCommand command = new SQLiteCommand(query, connection))
                     {
-                        query += " OR Cap = @cap";
-                        parameters.Add("@cap");
-                    }
-                    if (!string.IsNullOrWhiteSpace(tuyDurumu) && tuyDurumu != "boş")
-                    {
-                        query += " OR TuyDurumu = @tuyDurumu";
-                        parameters.Add("@tuyDurumu");
-                    }
-                    if (!string.IsNullOrWhiteSpace(yuzey) && yuzey != "boş")
-                    {
-                        query += " OR Yuzey = @yuzey OR Yuzey LIKE @yuzey || ',%' OR Yuzey LIKE '%,' || @yuzey || ',%' OR Yuzey LIKE '%,' || @yuzey";
-                        parameters.Add("@yuzey");
-                    }
-                    if (!string.IsNullOrWhiteSpace(dallanma) && dallanma != "boş")
-                    {
-                        query += " OR Dallanma = @dallanma";
-                        parameters.Add("@dallanma");
-                    }
-                    if (!string.IsNullOrWhiteSpace(nodyum) && nodyum != "boş")
-                    {
-                        query += " OR Nodyum = @nodyum";
-                        parameters.Add("@nodyum");
-                    }
-                    if (!string.IsNullOrWhiteSpace(uzunluk) && uzunluk != "boş")
-                    {
-                        query += " OR Uzunluk = @uzunluk";
-                        parameters.Add("@uzunluk");
-                    }
-                    if (!string.IsNullOrWhiteSpace(durus) && durus != "boş")
-                    {
-                        query += " OR Durus = @durus";
-                        parameters.Add("@durus");
-                    }
-                    if (!string.IsNullOrWhiteSpace(renk) && renk != "boş")
-                    {
-                        query += " OR Renk = @renk";
-                        parameters.Add("@renk");
-                    }
-                    SQLiteCommand command = new SQLiteCommand(query, connection);
-                    // Parametreleri ekle
-                    if (parameters.Contains("@cap")) command.Parameters.AddWithValue("@cap", cap);
-                    if (parameters.Contains("@tuyDurumu")) command.Parameters.AddWithValue("@tuyDurumu", tuyDurumu);
-                    if (parameters.Contains("@yuzey")) command.Parameters.AddWithValue("@yuzey", yuzey);
-                    if (parameters.Contains("@dallanma")) command.Parameters.AddWithValue("@dallanma", dallanma);
-                    if (parameters.Contains("@nodyum")) command.Parameters.AddWithValue("@nodyum", nodyum);
-                    if (parameters.Contains("@uzunluk")) command.Parameters.AddWithValue("@uzunluk", uzunluk);
-                    if (parameters.Contains("@durus")) command.Parameters.AddWithValue("@durus", durus);
-                    if (parameters.Contains("@ren" +
-                        "k")) command.Parameters.AddWithValue("@renk", renk);
-                    SQLiteDataReader reader = command.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        string bitkiAdi = reader["BitkiAdi"].ToString();
-                        if (!bitkiAdlari.Contains(bitkiAdi))
+                        command.Parameters.AddRange(parameters.ToArray());
+                        using (SQLiteDataReader reader = command.ExecuteReader())
                         {
-                            bitkiAdlari.Add(bitkiAdi);
+                            while (reader.Read())
+                            {
+                                string bitkiAdi = reader["BitkiAdi"].ToString();
+                                if (!bitkiAdlari.Contains(bitkiAdi))
+                                    bitkiAdlari.Add(bitkiAdi);
+                            }
                         }
                     }
-                    reader.Close();
                 }
                 catch (Exception ex)
                 {
@@ -218,12 +227,12 @@ namespace bitki_analiz_sistemi
                     bitkiAdlari.Add("Hata oluştu.");
                 }
             }
-            // comboBoxTurAdi’yı güncelle
+
             comboBoxTurAdi.Items.Clear();
             if (bitkiAdlari.Count > 0)
             {
                 comboBoxTurAdi.Items.AddRange(bitkiAdlari.ToArray());
-                comboBoxTurAdi.SelectedIndex = 0; // İlkini seç
+                comboBoxTurAdi.SelectedIndex = -1; // Otomatik seçme
             }
             else
             {
