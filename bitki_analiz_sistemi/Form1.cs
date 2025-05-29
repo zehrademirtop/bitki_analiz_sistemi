@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Net.Http;
 using Newtonsoft.Json;
+using Org.BouncyCastle.Ocsp;
 namespace bitki_analiz_sistemi
 {
     public partial class Form1 : Form
@@ -130,101 +131,92 @@ namespace bitki_analiz_sistemi
         }
         private void GuncelleTurAdi()
         {
-            string cap = comboBoxcap.SelectedItem?.ToString() ?? "";
-            string tuyDurumu = comboBoxTuyDurumu.SelectedItem?.ToString() ?? "";
-            string yuzey = comboBoxYuzey.SelectedItem?.ToString() ?? "";
-            string dallanma = comboBoxDallanma.SelectedItem?.ToString() ?? "";
-            string nodyum = comboBoxNodyum.SelectedItem?.ToString() ?? "";
-            string uzunluk = comboBoxUzunluk.SelectedItem?.ToString() ?? "";
-            string durus = comboBoxDurus.SelectedItem?.ToString() ?? "";
-            string renk = comboBoxRenk.SelectedItem?.ToString() ?? "";
-
             List<string> conditions = new List<string>();
             List<SQLiteParameter> parameters = new List<SQLiteParameter>();
 
-            // Filtre varsa WHERE şartlarına ekle
-            if (!string.IsNullOrWhiteSpace(cap) && cap != "boş")
+            if (comboBoxcap != null && comboBoxcap.SelectedValue != null && comboBoxcap.SelectedIndex != -1 && (int)comboBoxcap.SelectedValue != 0)
             {
-                conditions.Add("Cap = @cap");
-                parameters.Add(new SQLiteParameter("@cap", cap));
-            }
-            if (!string.IsNullOrWhiteSpace(tuyDurumu) && tuyDurumu != "boş")
-            {
-                conditions.Add("TuyDurumu = @tuyDurumu");
-                parameters.Add(new SQLiteParameter("@tuyDurumu", tuyDurumu));
-            }
-            if (!string.IsNullOrWhiteSpace(yuzey) && yuzey != "boş")
-            {
-                // Yüzey içinde arama (örnek: "Tüylü" yüzey olanlar)
-                conditions.Add("(Yuzey = @yuzey OR Yuzey LIKE @yuzeyLike1 OR Yuzey LIKE @yuzeyLike2 OR Yuzey LIKE @yuzeyLike3)");
-                parameters.Add(new SQLiteParameter("@yuzey", yuzey));
-                parameters.Add(new SQLiteParameter("@yuzeyLike1", yuzey + ",%"));
-                parameters.Add(new SQLiteParameter("@yuzeyLike2", "%," + yuzey + ",%"));
-                parameters.Add(new SQLiteParameter("@yuzeyLike3", "%," + yuzey));
-            }
-            if (!string.IsNullOrWhiteSpace(dallanma) && dallanma != "boş")
-            {
-                conditions.Add("Dallanma = @dallanma");
-                parameters.Add(new SQLiteParameter("@dallanma", dallanma));
-            }
-            if (!string.IsNullOrWhiteSpace(nodyum) && nodyum != "boş")
-            {
-                conditions.Add("Nodyum = @nodyum");
-                parameters.Add(new SQLiteParameter("@nodyum", nodyum));
-            }
-            if (!string.IsNullOrWhiteSpace(uzunluk) && uzunluk != "boş")
-            {
-                conditions.Add("Uzunluk = @uzunluk");
-                parameters.Add(new SQLiteParameter("@uzunluk", uzunluk));
-            }
-            if (!string.IsNullOrWhiteSpace(durus) && durus != "boş")
-            {
-                conditions.Add("Durus = @durus");
-                parameters.Add(new SQLiteParameter("@durus", durus));
-            }
-            if (!string.IsNullOrWhiteSpace(renk) && renk != "boş")
-            {
-                conditions.Add("Renk = @renk");
-                parameters.Add(new SQLiteParameter("@renk", renk));
+                conditions.Add("Bitkiler.CapId = @CapId");
+                parameters.Add(new SQLiteParameter("@CapId", comboBoxcap.SelectedValue));
             }
 
-            string whereClause = "";
-            if (conditions.Count > 0)
+
+
+            if (comboBoxTuyDurumu != null && comboBoxTuyDurumu.SelectedValue != null && comboBoxTuyDurumu.SelectedIndex != -1 && (int)comboBoxTuyDurumu.SelectedValue != 0)
             {
-                whereClause = "WHERE " + string.Join(" OR ", conditions);
+                conditions.Add("Bitkiler.TuyDurumuId = @TuyDurumuId");
+                parameters.Add(new SQLiteParameter("@TuyDurumuId", comboBoxTuyDurumu.SelectedValue));
             }
-            else
+
+
+
+
+            if (comboBoxYuzey != null && comboBoxYuzey.SelectedIndex != -1 && comboBoxYuzey.SelectedValue != null && (int)comboBoxYuzey.SelectedValue != 0)
             {
-                // Hiç filtre yoksa tüm bitkileri getir (dikkat: çok sayıda sonuç olabilir)
-                whereClause = "";
+                conditions.Add("Bitkiler.YuzeyId = @YuzeyId");
+                parameters.Add(new SQLiteParameter("@YuzeyId", comboBoxYuzey.SelectedValue));
             }
+
+
+            if (comboBoxDallanma != null && comboBoxDallanma.SelectedValue != null && comboBoxDallanma.SelectedIndex != -1 && (int)comboBoxDallanma.SelectedValue != 0)
+            {
+                conditions.Add("Bitkiler.DallanmaId = @DallanmaId");
+                parameters.Add(new SQLiteParameter("@DallanmaId", comboBoxDallanma.SelectedValue));
+            }
+
+
+
+            if (comboBoxNodyum != null && comboBoxNodyum.SelectedIndex != -1 && comboBoxNodyum.SelectedValue != null && (int)comboBoxNodyum.SelectedValue != 0)
+            {
+                conditions.Add("Bitkiler.NodyumId = @NodyumId");
+                parameters.Add(new SQLiteParameter("@NodyumId", comboBoxNodyum.SelectedValue));
+            }
+
+
+            if (comboBoxUzunluk != null && comboBoxUzunluk.SelectedValue != null && comboBoxUzunluk.SelectedIndex != -1 && (int)comboBoxUzunluk.SelectedValue != 0)
+            {
+                conditions.Add("Bitkiler.UzunlukId = @UzunlukId");
+                parameters.Add(new SQLiteParameter("@UzunlukId", comboBoxUzunluk.SelectedValue));
+            }
+
+
+            if (comboBoxDurus != null && comboBoxDurus.SelectedIndex != -1 && comboBoxDurus.SelectedValue != null && (int)comboBoxDurus.SelectedValue != 0)
+            {
+                conditions.Add("Bitkiler.DurusId = @DurusId");
+                parameters.Add(new SQLiteParameter("@DurusId", comboBoxDurus.SelectedValue));
+            }
+
+
+            if (comboBoxRenk != null && comboBoxRenk.SelectedValue != null && comboBoxRenk.SelectedIndex != -1 && comboBoxRenk.SelectedValue is int selectedValue && selectedValue != 0)
+            {
+                conditions.Add("Bitkiler.RenkId = @RenkId");
+                parameters.Add(new SQLiteParameter("@RenkId", selectedValue));
+            }
+
+
+            string whereClause = conditions.Count > 0 ? "WHERE " + string.Join(" AND ", conditions) : "";
 
             List<string> bitkiAdlari = new List<string>();
 
             using (SQLiteConnection connection = new SQLiteConnection(connectionString))
             {
-                try
+                connection.Open();
+                string query = $@"
+            SELECT DISTINCT Bitkiler.BitkiAdi 
+            FROM Bitkiler
+            {whereClause}";
+
+                using (SQLiteCommand command = new SQLiteCommand(query, connection))
                 {
-                    connection.Open();
-                    string query = $"SELECT DISTINCT BitkiAdi FROM Bitkiler {whereClause}";
-                    using (SQLiteCommand command = new SQLiteCommand(query, connection))
+                    command.Parameters.AddRange(parameters.ToArray());
+
+                    using (SQLiteDataReader reader = command.ExecuteReader())
                     {
-                        command.Parameters.AddRange(parameters.ToArray());
-                        using (SQLiteDataReader reader = command.ExecuteReader())
+                        while (reader.Read())
                         {
-                            while (reader.Read())
-                            {
-                                string bitkiAdi = reader["BitkiAdi"].ToString();
-                                if (!bitkiAdlari.Contains(bitkiAdi))
-                                    bitkiAdlari.Add(bitkiAdi);
-                            }
+                            bitkiAdlari.Add(reader["BitkiAdi"].ToString());
                         }
                     }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Veritabanı hatası: {ex.Message}", "Hata");
-                    bitkiAdlari.Add("Hata oluştu.");
                 }
             }
 
@@ -232,15 +224,39 @@ namespace bitki_analiz_sistemi
             if (bitkiAdlari.Count > 0)
             {
                 comboBoxTurAdi.Items.AddRange(bitkiAdlari.ToArray());
-                comboBoxTurAdi.SelectedIndex = -1; // Otomatik seçme
+                comboBoxTurAdi.SelectedIndex = 0;
             }
             else
             {
                 comboBoxTurAdi.Items.Add("Bitki bulunamadı.");
                 comboBoxTurAdi.SelectedIndex = 0;
-                labelMensei.Text = "Menşei: Bilinmiyor";
             }
         }
+
+        private void CaplariYukle()
+        {
+            using (SQLiteConnection conn = new SQLiteConnection(connectionString))
+            {
+                conn.Open();
+                SQLiteCommand cmd = new SQLiteCommand("SELECT CapId, CapDegeri FROM Cap", conn);
+                SQLiteDataAdapter da = new SQLiteDataAdapter(cmd);
+                DataTable dt = new DataTable();
+                da.Fill(dt);
+
+                // "boş" seçeneğini eklemek için yeni bir satır ekleyelim:
+                DataRow emptyRow = dt.NewRow();
+                emptyRow["CapId"] = 0;  // ID 0 ise filtre dışı
+                emptyRow["CapDegeri"] = "boş";
+                dt.Rows.InsertAt(emptyRow, 0);
+
+                comboBoxcap.DataSource = dt;
+                comboBoxcap.DisplayMember = "CapDegeri";  // ComboBox'da gösterilen isim
+                comboBoxcap.ValueMember = "CapId";        // Filtrede kullanılacak ID
+                comboBoxcap.SelectedIndex = 0;
+            }
+        }
+
+
         private void Bilgiver_Click(object sender, EventArgs e)
         {
 
@@ -275,10 +291,7 @@ namespace bitki_analiz_sistemi
                 labelMensei.Text = "Menşei: Bilinmiyor";
             }
         }
-        private void label7_Click(object sender, EventArgs e)
-        {
-
-        }
+        
     }
 }
 //if (Yuzey == "Tüylü")

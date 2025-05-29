@@ -123,7 +123,7 @@
             this.label7.Size = new System.Drawing.Size(73, 16);
             this.label7.TabIndex = 15;
             this.label7.Text = "Dallanma";
-            this.label7.Click += new System.EventHandler(this.label7_Click);
+//            this.label7.Click += new System.EventHandler(this.label7_Click);
             // 
             // label8
             // 
