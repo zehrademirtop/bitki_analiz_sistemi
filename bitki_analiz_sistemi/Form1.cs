@@ -198,6 +198,7 @@ namespace bitki_analiz_sistemi
 
             List<string> bitkiAdlari = new List<string>();
 
+
             using (SQLiteConnection connection = new SQLiteConnection(connectionString))
             {
                 connection.Open();
