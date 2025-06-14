@@ -295,23 +295,3 @@ namespace bitki_analiz_sistemi
         
     }
 }
-//if (Yuzey == "Tüylü")
-//{ss
-//    if (cap == "2 mm" && Renk == "Açık Vişne" && TuyDurumu == "Tüysüz" && Uzunluk == "50–70 cm" && Durus == "Dik")
-//    {
-//        bitkiAdlari.Add("Ankyropetalum arsusianum");
-//    }
-//}
-//if (Dallanma == "Tabanda Sık" && cap == "1-3 mm" && Nodyum == "İnternodlar Kısa")
-//{
-//    if (Renk == "Açık Vişne" && TuyDurumu == "Tüylü" && Uzunluk == "80 cm" && Durus == "Dik")
-//    {
-//        bitkiAdlari.Add("Ankyropetalum reuteri");
-//    }
-//}
-//if (Dallanma == "Tabanda Birkaç" && cap == "2,5-5 mm" && Nodyum == "İnternodlar Belirgin")
-//{
-//    if (Renk == "Solgun Yeşil" && Yuzey == "Tüylü" && Uzunluk == "50–80 cm")
-//    {
-//        bitkiAdlari.Add("Ankyropetalum gypsophiloides");
-//    }
