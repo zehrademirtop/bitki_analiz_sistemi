@@ -1,0 +1,2 @@
+C:/Users/demir/Desktop/linke/android/app/.cxx/RelWithDebInfo/2l5ej1i3/x86_64/CMakeFiles/edit_cache.dir
+C:/Users/demir/Desktop/linke/android/app/.cxx/RelWithDebInfo/2l5ej1i3/x86_64/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "100659159941",
+    "project_id": "ulayzer-e30f7",
+    "storage_bucket": "ulayzer-e30f7.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:100659159941:android:e5eea68ddea6fbcbb31aec",
+        "android_client_info": {
+          "package_name": "com.example.ulayzer"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRVNAMgBQQK5szh04CrF9hzdr-uGseJqE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
