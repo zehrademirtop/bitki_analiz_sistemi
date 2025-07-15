@@ -17,57 +17,36 @@ import 'package:fl_chart/fl_chart.dart';
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 Map<String, int> linkStatistics = {};
 final Set<String> _sentNotifications = {};
-List<Map<String, dynamic>> _processedMessages = [];
+List<Map<String, dynamic>> _processedLinks = [];
 
 class LinkAnalyzer {
   static List<String> extractLinks(String text) {
     final regex = RegExp(r'(https?://\S+|www\.\S+\.\S+)');
-    return regex.allMatches(text).map((e) => e.group(0)!).toSet().toList();
+    return regex.allMatches(text).map((e) => e.group(0)!).toList();
   }
 
-  static Future<bool> isMessageProcessed(String contentKey, String source) async {
-    final result = _processedMessages.any((item) =>
-    item['contentKey'] == contentKey &&
-        item['source'] == source &&
-        DateTime.parse(item['timestamp']).isAfter(
-            DateTime.now().subtract(const Duration(minutes: 5))));
+  static Future<bool> isLinkProcessed(String link) async {
+    final result = _processedLinks.any((item) =>
+    item['link'] == link && DateTime.parse(item['timestamp']).isAfter(
+        DateTime.now().subtract(const Duration(minutes: 5))));
     if (result) {
-      print("Mesaj zaten işlenmiş (son 5 dakika): $contentKey, Kaynak: $source");
+      print("Link zaten işlenmiş (son 5 dakika): $link");
       return true;
     }
-    print("Mesaj işlenmemiş: $contentKey, Kaynak: $source");
+    print("Link işlenmemiş: $link");
     return false;
   }
 
-  static Future<bool> isLinkProcessed(String link, String source) async {
-    final result = _processedMessages.any((item) =>
-    item['link'] == link &&
-        item['source'] == source &&
-        DateTime.parse(item['timestamp']).isAfter(
-            DateTime.now().subtract(const Duration(minutes: 5))));
-    if (result) {
-      print("Link zaten işlenmiş (son 5 dakika): $link, Kaynak: $source");
-      return true;
-    }
-    print("Link işlenmemiş: $link, Kaynak: $source");
-    return false;
-  }
-
-  static Future<void> markMessageAsProcessed(String contentKey, String link, String source) async {
-    if (!_processedMessages.any((item) => item['contentKey'] == contentKey && item['link'] == link && item['source'] == source)) {
-      _processedMessages.add({
-        'contentKey': contentKey,
-        'link': link,
-        'source': source,
-        'timestamp': DateTime.now().toIso8601String(),
-      });
-      print("Mesaj ve link işlenmiş olarak işaretlendi: $contentKey, Link: $link, Kaynak: $source");
-    } else {
-      print("Mesaj ve link zaten işlenmiş, tekrar eklenmedi: $contentKey, Link: $link, Kaynak: $source");
-    }
-    _processedMessages.removeWhere((item) =>
+  static Future<void> markLinkAsProcessed(String link, String source) async {
+    _processedLinks.add({
+      'link': link,
+      'source': source,
+      'timestamp': DateTime.now().toIso8601String(),
+    });
+    _processedLinks.removeWhere((item) =>
         DateTime.parse(item['timestamp']).isBefore(
             DateTime.now().subtract(const Duration(minutes: 10))));
+    print("Link işlenmiş olarak işaretlendi: $link, Kaynak: $source");
   }
 
   static Future<bool> _checkLinkSafety(String link) async {
@@ -80,17 +59,18 @@ class LinkAnalyzer {
       return isMaliciousVirusTotal;
     } catch (e) {
       print(
-          "Link güvenliği kontrolü hatası: $e için $link - Varsayılan olarak güvenli kabul edildi");
-      return false;
+          "Link güvenliği kontrolü hatası: $e için $link - Varsayılan olarak zararlı kabul edildi");
+      return true;
     }
   }
 
-  static Future<void> showNotification(String title, String body, String notificationId, String source) async {
+  static Future<void> showNotification(String title, String body,
+      [String? notificationId]) async {
     try {
-      final notificationKey = "$source|$body|$notificationId";
+      final notificationKey = "$title|$body|$notificationId";
       if (_sentNotifications.contains(notificationKey)) {
         print(
-            "Bildirim zaten gönderildi, tekrar gönderilmez: $title - $body (ID: $notificationId, Kaynak: $source)");
+            "Bildirim zaten gönderildi, tekrar gönderilmez: $title - $body (ID: $notificationId)");
         return;
       }
 
@@ -108,15 +88,17 @@ class LinkAnalyzer {
       const notificationDetails = NotificationDetails(android: androidDetails);
 
       await flutterLocalNotificationsPlugin.show(
-        notificationId.hashCode,
+        notificationId?.hashCode ?? DateTime
+            .now()
+            .millisecondsSinceEpoch % 100000,
         title,
         body,
         notificationDetails,
-        payload: 'link-analiz|$source',
+        payload: 'link-analiz',
       );
 
       _sentNotifications.add(notificationKey);
-      print("Bildirim gönderildi: $title - $body (ID: $notificationId, Kaynak: $source)");
+      print("Bildirim gönderildi: $title - $body (ID: $notificationId)");
     } catch (e) {
       print("Bildirim gönderme hatası: $e");
     }
@@ -147,26 +129,31 @@ class LinkAnalyzer {
         return false;
       }
 
-      await Future.delayed(const Duration(seconds: 2));
-      final resultResponse = await http.get(
-        Uri.parse('https://www.virustotal.com/api/v3/analyses/$analysisId'),
-        headers: {'x-apikey': apiKey},
-      );
+      await Future.delayed(const Duration(seconds: 5));
+      int retryCount = 0;
+      while (retryCount < 2) {
+        final resultResponse = await http.get(
+          Uri.parse('https://www.virustotal.com/api/v3/analyses/$analysisId'),
+          headers: {'x-apikey': apiKey},
+        );
 
-      if (resultResponse.statusCode == 200) {
-        final resultData = jsonDecode(resultResponse.body);
-        final status = resultData['data']['attributes']['status'] as String?;
-        if (status == 'completed') {
-          final stats = resultData['data']['attributes']['stats'] as Map?;
-          if (stats != null) {
-            final malicious = stats['malicious'] as int? ?? 0;
-            return malicious > 0;
+        if (resultResponse.statusCode == 200) {
+          final resultData = jsonDecode(resultResponse.body);
+          final status = resultData['data']['status'] as String?;
+          if (status == 'completed') {
+            final stats = resultData['data']['attributes']['stats'] as Map?;
+            if (stats != null) {
+              final malicious = stats['malicious'] as int? ?? 0;
+              return malicious > 0;
+            }
+          } else {
+            print("VirusTotal analiz durumu: $status - $url");
           }
         } else {
-          print("VirusTotal analiz durumu: $status - $url");
+          print("VirusTotal sorgu hatası: ${resultResponse.statusCode} - $url");
         }
-      } else {
-        print("VirusTotal sorgu hatası: ${resultResponse.statusCode} - $url");
+        await Future.delayed(const Duration(seconds: 2));
+        retryCount++;
       }
       print("VirusTotal analiz tamamlanmadı, varsayılan güvenli kabul edildi: $url");
       return false;
@@ -223,144 +210,93 @@ class LinkAnalyzer {
     }
   }
 
-  static Future<void> processMessages(ServiceInstance? service, {Map<String, dynamic>? singleMessage}) async {
+  static Future<void> processMessages(ServiceInstance? service) async {
     try {
-      print("processMessages çağrıldı, SMS tarama başlatılıyor: ${DateTime.now()}");
+      print("processMessages çağrıldı, SMS tarama başlatılıyor: ${DateTime
+          .now()}");
       if (!await Permission.sms.isGranted) {
-        print("SMS izni eksik, tarama yapılamıyor.");
+        print("SMS izni hala eksik, tarama yapılamıyor.");
         return;
       }
 
-      List<Map<String, dynamic>> messages;
-      if (singleMessage != null) {
-        messages = [singleMessage];
-        print("Tek SMS işleniyor: ID=${singleMessage['id']}, İçerik=${singleMessage['body']}, Gönderici=${singleMessage['address']}, Tarih=${singleMessage['date']}");
-      } else {
-        print("Son 1 dakikadaki tüm SMS'ler taranıyor...");
-        final SmsQuery query = SmsQuery();
-        final smsMessages = await query.getAllSms;
-        messages = smsMessages
-            .where((msg) =>
-        msg.date != null &&
-            msg.date!.isAfter(DateTime.now().subtract(const Duration(minutes: 1))))
-            .map((msg) => {
-          'id': msg.id,
-          'address': msg.address,
-          'body': msg.body,
-          'date': msg.date?.toIso8601String(),
-        })
-            .toList();
-        print("Son 1 dakikada bulunan SMS sayısı: ${messages.length}");
-        if (messages.isEmpty) {
-          print("Son 1 dakikada SMS bulunamadı, yeni SMS bekleniyor.");
-          return;
-        }
+      final SmsQuery query = SmsQuery();
+      final messages = await query.getAllSms;
+      print("Toplam SMS sayısı: ${messages.length}");
+      if (messages.isEmpty) {
+        print(
+            "SMS veritabanında mesaj bulunamadı, erişim testi başarısız olabilir.");
+        return;
       }
 
-      for (var message in messages) {
-        final body = message['body'] as String?;
-        final address = message['address'] as String?;
-        final date = message['date'] != null
-            ? DateTime.parse(message['date'] as String)
-            : DateTime.now();
-        final id = message['id'] as int?;
+      final recentMessages = messages.where((msg) =>
+      msg.date != null && msg.date!.isAfter(
+          DateTime.now().subtract(const Duration(seconds: 30)))).toList();
+      print("Son 30 saniyede mesaj sayısı: ${recentMessages.length}");
+      if (recentMessages.isEmpty) {
+        print("Son 30 saniyede mesaj bulunamadı, yeni SMS bekleniyor.");
+        return;
+      }
 
-        if (body == null || body.isEmpty) {
-          print("SMS içeriği boş veya geçersiz: ID=$id");
+      final latestMessage = recentMessages.reduce((a, b) =>
+      a.date!.isAfter(b.date!) ? a : b);
+      if (latestMessage.body == null || latestMessage.body!.isEmpty) {
+        print("Son SMS içeriği boş veya geçersiz: ${latestMessage.id}");
+        return;
+      }
+
+      final links = LinkAnalyzer.extractLinks(latestMessage.body!);
+      print("Son SMS'te bulunan linkler: $links");
+      if (links.isEmpty) {
+        print("Son SMS'te link bulunamadı: ${latestMessage.body}");
+        return;
+      }
+
+      for (String link in links) {
+        print("İşlenen link: $link");
+        if (await LinkAnalyzer.isLinkProcessed(link)) {
+          print("Link zaten işlenmiş (son 5 dakika): $link");
           continue;
         }
 
-        final contentKey = "$body|$address|${date.toIso8601String()}|$id";
-        if (await isMessageProcessed(contentKey, 'SMS')) {
-          print("SMS zaten işlenmiş, atlanıyor: $contentKey");
-          continue;
-        }
+        bool isMalicious = await LinkAnalyzer._checkLinkSafety(link);
+        final notificationData = {
+          'source': 'SMS',
+          'link': link,
+          'isMalicious': isMalicious ? 1 : 0,
+          'timestamp': DateTime.now().toIso8601String(),
+          'sender': latestMessage.address ?? "Bilinmeyen Gönderici",
+        };
 
-        final links = LinkAnalyzer.extractLinks(body).toSet().toList();
-        print("SMS'te bulunan benzersiz linkler: $links");
-
-        if (links.isEmpty) {
-          print("SMS'te link bulunamadı: $body");
-          await markMessageAsProcessed(contentKey, '', 'SMS');
-          continue;
-        }
-
+        await LinkAnalyzer.markLinkAsProcessed(link, 'SMS');
         final user = FirebaseAuth.instance.currentUser;
-        if (user == null) {
+        if (user != null) {
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(user.uid)
+              .collection('notifications')
+              .add(notificationData);
+          print("SMS bildirim verisi Firestore'a eklendi (UID: ${user
+              .uid}): $notificationData");
+        } else {
           print("Kullanıcı oturumu açık değil, veri kaydedilemedi.");
-          return;
         }
 
-        for (String link in links) {
-          final uniqueLinkKey = 'SMS|$link|${date.toIso8601String()}';
-          if (await isLinkProcessed(link, 'SMS')) {
-            print("Link zaten işlenmiş, atlanıyor: $link");
-            continue;
-          }
+        if (service != null) {
+          service.invoke("updateNotification", notificationData);
+        }
 
-          print("İşlenen SMS linki: $link");
-          final notificationId = "sms_${link.hashCode}_${date.toIso8601String()}";
+        if (isMalicious) {
+          print("Zararlı link tespit edildi, bildirim gönderiliyor: $link");
           await LinkAnalyzer.showNotification(
-              "⏳ SMS - Link Kontrol Ediliyor",
-              link,
-              notificationId,
-              "SMS");
-
-          Future<bool> safetyCheck = LinkAnalyzer._checkLinkSafety(link);
-          safetyCheck.then((isMalicious) async {
-            await LinkAnalyzer.showNotification(
-                isMalicious ? "⚠️ SMS - Zararlı Link!" : "✅ SMS - Güvenli Link",
-                link,
-                notificationId,
-                "SMS");
-
-            final notificationData = {
-              'source': 'SMS',
-              'link': link,
-              'isMalicious': isMalicious ? 1 : 0,
-              'timestamp': date.toIso8601String(),
-              'sender': address ?? "Bilinmeyen Gönderici",
-              'contentKey': contentKey,
-              'uniqueLinkKey': uniqueLinkKey,
-            };
-
-            final existingDocs = await FirebaseFirestore.instance
-                .collection('users')
-                .doc(user.uid)
-                .collection('notifications')
-                .where('uniqueLinkKey', isEqualTo: uniqueLinkKey)
-                .where('contentKey', isEqualTo: contentKey)
-                .get();
-            if (existingDocs.docs.isEmpty) {
-              await FirebaseFirestore.instance
-                  .collection('users')
-                  .doc(user.uid)
-                  .collection('notifications')
-                  .add(notificationData);
-              print("SMS bildirim verisi Firestore'a eklendi (UID: ${user.uid}): $notificationData");
-              if (service != null) {
-                service.invoke("updateNotification", notificationData);
-              }
-            } else {
-              print("SMS bildirim zaten Firestore'da mevcut, eklenmedi: $contentKey, Link: $link");
-            }
-          }).catchError((e) {
-            print("Güvenlik kontrolü hatası, bildirim güncelleniyor: $e");
-            LinkAnalyzer.showNotification(
-                "✅ SMS - Güvenli Link (Hata)",
-                link,
-                notificationId,
-                "SMS");
-          });
-
-          await markMessageAsProcessed(contentKey, link, 'SMS');
+              "⚠️ SMS - Zararlı Link!", link, "sms_${link.hashCode}");
+        } else {
+          print("Güvenli link tespit edildi, bildirim gönderiliyor: $link");
+          await LinkAnalyzer.showNotification(
+              "✅ SMS - Güvenli Link", link, "sms_${link.hashCode}");
         }
-
-        await markMessageAsProcessed(contentKey, '', 'SMS');
       }
-      print("SMS kontrolü tamamlandı: ${DateTime.now()}");
-    } catch (e, stackTrace) {
-      print("SMS okuma hatası: $e, StackTrace: $stackTrace");
+    } catch (e) {
+      print("SMS okuma hatası: $e, StackTrace: ${StackTrace.current}");
     }
   }
 }
@@ -542,7 +478,7 @@ class _PrivacyCenterPageState extends State<PrivacyCenterPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.all(16.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: Image.asset(
                         'assets/google_icon.png',
                         width: 50,
@@ -550,7 +486,7 @@ class _PrivacyCenterPageState extends State<PrivacyCenterPage> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(16.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: Image.asset(
                         'assets/virustotal_icon.png',
                         width: 50,
@@ -815,29 +751,17 @@ void onStart(ServiceInstance service) async {
 
   if (!await Permission.sms.isGranted) {
     print("SMS izni eksik, arka plan servisi şu anda çalışmayacak. İzin bekleniyor...");
-    return;
   } else {
     print("SMS izni mevcut, tarama başlayabilir.");
   }
 
-  const platform = MethodChannel('com.example.ulayzer/sms_receiver');
-  platform.setMethodCallHandler((call) async {
+  Timer.periodic(const Duration(seconds: 5), (timer) async {
+    print("Timer tetiklendi, SMS kontrolü başlatılıyor: ${DateTime.now()}");
     try {
-      if (call.method == 'onSmsReceived') {
-        final args = call.arguments as Map;
-        final message = {
-          'id': args['id'] as int?,
-          'address': args['address'] as String?,
-          'body': args['body'] as String?,
-          'date': DateTime.fromMillisecondsSinceEpoch(args['date'] as int).toIso8601String(),
-        };
-        print("Yeni SMS alındı: İçerik=${message['body']}, Gönderici=${message['address']}, Zaman=${message['date']}, ID=${message['id']}");
-        await LinkAnalyzer.processMessages(service, singleMessage: message);
-      } else {
-        print("Bilinmeyen MethodChannel çağrısı: ${call.method}");
-      }
-    } catch (e, stackTrace) {
-      print("MethodChannel hata: $e, StackTrace: $stackTrace");
+      await LinkAnalyzer.processMessages(service);
+      print("SMS kontrolü tamamlandı: ${DateTime.now()}");
+    } catch (e) {
+      print("SMS kontrolü hatası: $e, StackTrace: ${StackTrace.current}");
     }
   });
 
@@ -860,35 +784,37 @@ void startNotificationListener(ServiceInstance service) {
       final sender = extractSenderFromText('$notificationText $bigText $summaryText', packageName);
       final notificationKey = '$packageName|$notificationText|$bigText|$summaryText|$sender|$timestamp';
 
-      if (lastNotificationTime != null && timestamp.difference(lastNotificationTime!).inMilliseconds < 1000) {
-        print("Aynı bildirim 1000ms içinde tekrarlandı, atlanıyor: $notificationKey");
+      // Son 5 dakikadan eski bildirimleri filtrele
+      if (timestamp.isBefore(DateTime.now().subtract(const Duration(minutes: 5)))) {
+        print("Bildirim 5 dakikadan eski, atlanıyor: $notificationKey, Zaman: $timestamp");
         return;
       }
 
-      if (packageName == 'com.whatsapp' ||
-          packageName == 'com.whatsapp.w4b' ||
-          packageName == 'com.google.android.gm' ||
-          packageName == 'com.google.android.gm.lite') {
-        final source = packageName.contains('whatsapp') ? 'WhatsApp' : 'Gmail';
-        final combinedText = '$notificationText $bigText $summaryText'.trim();
-        final contentKey = '$packageName|$combinedText|$sender|$timestamp';
+      // Aynı bildirimin tekrar işlenmesini önle
+      if (lastProcessedNotifications.containsKey(notificationKey)) {
+        print("Aynı bildirim zaten işlendi, atlanıyor: $notificationKey");
+        return;
+      }
 
-        if (await LinkAnalyzer.isMessageProcessed(contentKey, source)) {
-          print("$source bildirim zaten işlenmiş, atlanıyor: $contentKey");
+      lastProcessedNotifications[notificationKey] = timestamp;
+
+      // Gmail için ek kontrol: Aynı içeriğin tekrarlanmasını önle
+      if (packageName == 'com.google.android.gm' || packageName == 'com.google.android.gm.lite') {
+        final contentKey = '$notificationText|$bigText|$summaryText';
+        if (lastProcessedNotifications.containsKey(contentKey) &&
+            timestamp.difference(lastProcessedNotifications[contentKey]!).inMilliseconds < 10000) {
+          print("Gmail için aynı içerik 10 saniye içinde tekrarlandı, atlanıyor: $contentKey");
           return;
         }
-
         lastProcessedNotifications[contentKey] = timestamp;
-        print("Bildirim alındı - Paket: $packageName, Metin: $notificationText, BigText: $bigText, Summary: $summaryText, Gönderici: $sender, Zaman: $timestamp");
-        if (MyApp.globalKey.currentState != null) {
-          await MyApp.globalKey.currentState!.onNotificationPosted(packageName, notificationText, bigText, summaryText, sender, timestamp, service);
-        }
-      } else {
-        print("Bu bildirim WhatsApp veya Gmail'den değil, atlanıyor: $packageName");
+      }
+
+      print("Bildirim alındı - Paket: $packageName, Metin: $notificationText, BigText: $bigText, Summary: $summaryText, Gönderici: $sender, Zaman: $timestamp");
+      if (MyApp.globalKey.currentState != null) {
+        await MyApp.globalKey.currentState!.onNotificationPosted(packageName, notificationText, bigText, summaryText, sender, timestamp, service);
       }
 
       lastNotificationTime = timestamp;
-      lastProcessedNotifications[notificationKey] = timestamp;
     }
   });
   print("Bildirim dinleyici başlatıldı");
@@ -910,19 +836,18 @@ String extractSenderFromText(String text, String packageName) {
     }
     return "Bilinmeyen Gönderici (WhatsApp)";
   } else if (packageName == 'com.google.android.gm' || packageName == 'com.google.android.gm.lite') {
-    final lines = text.split('\n').map((line) => line.trim()).toList();
-    for (var line in lines) {
-      final emailRegex = RegExp(r'([\w\s]+)\s*<\S+@\S+\.\S+>');
-      final match = emailRegex.firstMatch(line);
-      if (match != null) {
-        return match.group(1)?.trim() ?? "Bilinmeyen Gönderici (Gmail)";
-      }
-      if (line.contains(':') && !line.contains('http') && !line.contains('https')) {
-        final colonIndex = line.indexOf(':');
-        return line.substring(0, colonIndex).trim();
-      }
-      if (!line.contains('http') && !line.contains('https') && line.isNotEmpty) {
-        return line;
+    final lines = text.split('\n');
+    if (lines.isNotEmpty) {
+      final firstLine = lines[0].trim();
+      if (firstLine.contains('<') && firstLine.contains('>')) {
+        final startIndex = firstLine.indexOf('<');
+        if (startIndex > 0) {
+          return firstLine.substring(0, startIndex).trim();
+        }
+      } else if (firstLine.contains('Gmail') && lines.length > 1) {
+        return lines[1].trim().split(':')[0].trim();
+      } else if (!firstLine.contains('http') && !firstLine.contains('https')) {
+        return firstLine;
       }
     }
     return "Bilinmeyen Gönderici (Gmail)";
@@ -957,7 +882,6 @@ class _MyAppState extends State<MyApp> {
         String? userId = FirebaseAuth.instance.currentUser?.uid;
         if (userId == null) {
           await FirebaseAuth.instance.signInAnonymously();
-          print("Anonim oturum açıldı.");
         }
         _listenToNotifications();
       }
@@ -1035,123 +959,100 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> onNotificationPosted(String packageName, String notificationText, String bigText, String summaryText, String sender, DateTime timestamp, ServiceInstance? service) async {
     print("onNotificationPosted çağrıldı: $packageName, Metin: $notificationText, BigText: $bigText, Summary: $summaryText, Zaman: $timestamp");
+    final notificationKey = '$packageName|$notificationText|$bigText|$summaryText|$sender|$timestamp';
+
+    // Aynı bildirimin tekrar işlenmesini önle
+    if (recentNotifications.any((n) =>
+    n['notificationKey'] == notificationKey)) {
+      print("Aynı bildirim zaten işlendi, atlanıyor: $notificationKey");
+      return;
+    }
 
     final combinedText = '$notificationText $bigText $summaryText'.trim();
     final links = LinkAnalyzer.extractLinks(combinedText).toSet().toList();
     print("Çıkarılan benzersiz linkler: $links");
-
-    String source;
-    if (packageName == 'com.whatsapp' || packageName == 'com.whatsapp.w4b') {
-      source = 'WhatsApp';
-    } else if (packageName == 'com.google.android.gm' || packageName == 'com.google.android.gm.lite') {
-      source = 'Gmail';
-    } else {
-      print("Bildirim bilinmeyen kaynaktan geldi, işlenmeyecek: $packageName");
+    if (links.isEmpty) {
+      print("$packageName bildiriminde link bulunamadı: Text=$notificationText, BigText=$bigText, Summary=$summaryText");
       return;
     }
+
+    final latestLink = links[0];
+    if (await LinkAnalyzer.isLinkProcessed(latestLink)) {
+      print("$packageName link zaten işlenmiş: $latestLink");
+      return;
+    }
+
+    final updatedSender = extractSenderFromText(combinedText, packageName);
+    bool isMalicious = false;
+    try {
+      isMalicious = await LinkAnalyzer._checkLinkSafety(latestLink);
+    } catch (e) {
+      print("Link güvenliği kontrolü hatası (devam ediliyor): $e");
+    }
+    String source = packageName == 'com.whatsapp' || packageName == 'com.whatsapp.w4b' ? 'WhatsApp' :
+    packageName == 'com.google.android.gm' || packageName == 'com.google.android.gm.lite' ? 'Gmail' :
+    packageName == 'com.google.android.apps.messaging' ? 'SMS' : 'Unknown';
     print("Belirlenen kaynak: $source, Paket: $packageName");
 
-    final contentKey = '$packageName|$combinedText|$sender|$timestamp';
-    if (await LinkAnalyzer.isMessageProcessed(contentKey, source)) {
-      print("$source bildirim zaten işlenmiş: $contentKey");
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      print("Kullanıcı oturumu açık değil! UID: null");
+      return;
+    }
+    print("Oturum aktif, UID: ${user.uid}");
+
+    final notificationData = {
+      'source': source,
+      'link': latestLink,
+      'isMalicious': isMalicious ? 1 : 0,
+      'timestamp': timestamp.toIso8601String(),
+      'sender': updatedSender,
+      'combinedText': combinedText,
+      'notificationKey': notificationKey, // Bildirimi benzersiz şekilde tanımlamak için
+    };
+
+    updateLocalNotifications(notificationData);
+    print("Yerel listeye $source eklendi: $notificationData");
+
+    try {
+      final docRef = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .collection('notifications')
+          .add(notificationData);
+      print("$source bildirim verisi Firestore'a eklendi (UID: ${user.uid}), Doküman ID: ${docRef.id}");
+    } catch (e) {
+      print("$source Firestore yazma hatası: $e");
       return;
     }
 
-    if (links.isEmpty) {
-      print("$source bildiriminde link bulunamadı: Text=$notificationText, BigText=$bigText, Summary=$summaryText");
-      await LinkAnalyzer.markMessageAsProcessed(contentKey, '', source);
-      return;
+    if (service != null) {
+      service.invoke("updateNotification", {"notificationData": notificationData});
     }
 
-    for (String link in links) {
-      final uniqueLinkKey = '$source|$link|$timestamp';
-      if (await LinkAnalyzer.isLinkProcessed(link, source)) {
-        print("$source için link zaten işlenmiş: $link");
-        continue;
-      }
+    await LinkAnalyzer.markLinkAsProcessed(latestLink, source);
 
-      await LinkAnalyzer.showNotification(
-          "⏳ $source - Link Kontrol Ediliyor",
-          link,
-          "${source.toLowerCase()}_${link.hashCode}_$timestamp",
-          source);
-
-      bool isMalicious = false;
-      try {
-        isMalicious = await LinkAnalyzer._checkLinkSafety(link);
-      } catch (e) {
-        print("Link güvenliği kontrolü hatası (devam ediliyor): $e");
-      }
-
-      await LinkAnalyzer.showNotification(
-          isMalicious ? "⚠️ $source - Zararlı Link!" : "✅ $source - Güvenli Link",
-          link,
-          "${source.toLowerCase()}_${link.hashCode}_$timestamp",
-          source);
-
-      final notificationData = {
-        'source': source,
-        'link': link,
-        'isMalicious': isMalicious ? 1 : 0,
-        'timestamp': timestamp.toIso8601String(),
-        'sender': sender,
-        'combinedText': combinedText,
-        'contentKey': contentKey,
-        'uniqueLinkKey': uniqueLinkKey,
-      };
-
-      final user = FirebaseAuth.instance.currentUser;
-      if (user == null) {
-        print("Kullanıcı oturumu açık değil! UID: null");
-        return;
-      }
-      print("Oturum aktif, UID: ${user.uid}");
-
-      try {
-        final existingDocs = await FirebaseFirestore.instance
-            .collection('users')
-            .doc(user.uid)
-            .collection('notifications')
-            .where('uniqueLinkKey', isEqualTo: uniqueLinkKey)
-            .where('contentKey', isEqualTo: contentKey)
-            .get();
-        if (existingDocs.docs.isEmpty) {
-          final docRef = await FirebaseFirestore.instance
-              .collection('users')
-              .doc(user.uid)
-              .collection('notifications')
-              .add(notificationData);
-          print("$source bildirim verisi Firestore'a eklendi (UID: ${user.uid}), Doküman ID: ${docRef.id}");
-          updateLocalNotifications(notificationData);
-        } else {
-          print("$source bildirim zaten Firestore'da mevcut, eklenmedi: $contentKey, Link: $link");
-        }
-      } catch (e) {
-        print("$source Firestore yazma hatası: $e");
-        return;
-      }
-
-      if (service != null) {
-        service.invoke("updateNotification", {"notificationData": notificationData});
-      }
-
-      await LinkAnalyzer.markMessageAsProcessed(contentKey, link, source);
+    if (isMalicious) {
+      await LinkAnalyzer.showNotification("⚠️ $source - Zararlı Link!", latestLink, "${source.toLowerCase()}_${latestLink.hashCode}");
+    } else {
+      await LinkAnalyzer.showNotification("✅ $source - Güvenli Link", latestLink, "${source.toLowerCase()}_${latestLink.hashCode}");
     }
+
+    _lastProcessedNotificationTime = timestamp;
+    _lastProcessedNotificationContent = combinedText;
   }
 
   void updateLocalNotifications(Map<String, dynamic> notificationData) {
     setState(() {
       final existingIndex = recentNotifications.indexWhere((n) =>
-      n['uniqueLinkKey'] == notificationData['uniqueLinkKey'] &&
-          n['contentKey'] == notificationData['contentKey']);
+      n['notificationKey'] == notificationData['notificationKey']);
       if (existingIndex == -1) {
         recentNotifications.insert(0, notificationData);
         if (recentNotifications.length > 15) {
           recentNotifications.removeRange(15, recentNotifications.length);
         }
-        print("Yeni bildirim eklendi: ${notificationData['uniqueLinkKey']}");
       } else {
-        print("Aynı uniqueLinkKey ve contentKey zaten mevcut, eklenmedi: ${notificationData['uniqueLinkKey']}");
+        print("Aynı bildirim zaten mevcut, eklenmedi: ${notificationData['notificationKey']}");
       }
     });
   }
@@ -1195,22 +1096,7 @@ class _MyAppState extends State<MyApp> {
           (snapshot) {
         if (mounted) {
           setState(() {
-            final newNotifications = snapshot.docs
-                .map((doc) => doc.data())
-                .where((data) => !recentNotifications.any((n) =>
-            n['uniqueLinkKey'] == data['uniqueLinkKey'] &&
-                n['contentKey'] == data['contentKey']))
-                .toList();
-            recentNotifications = [
-              ...newNotifications,
-              ...recentNotifications.where((n) => !snapshot.docs.any((doc) =>
-              doc.data()['uniqueLinkKey'] == n['uniqueLinkKey'] &&
-                  doc.data()['contentKey'] == n['contentKey'])),
-            ];
-            recentNotifications.sort((a, b) => DateTime.parse(b['timestamp']).compareTo(DateTime.parse(a['timestamp'])));
-            if (recentNotifications.length > 15) {
-              recentNotifications = recentNotifications.sublist(0, 15);
-            }
+            recentNotifications = snapshot.docs.map((doc) => doc.data()).toList();
             print("Firestore'dan güncellenen son analizler (UID: $userId): ${recentNotifications.length} öğe");
           });
         }
@@ -1509,13 +1395,20 @@ class _MyAppState extends State<MyApp> {
                                         color: Colors.teal,
                                       );
                                       switch (value.toInt()) {
-                                        case 0: return const Text('Zararlı', style: style);
-                                        case 1: return const Text('Güvenli', style: style);
-                                        case 2: return const Text('Zararlı', style: style);
-                                        case 3: return const Text('Güvenli', style: style);
-                                        case 4: return const Text('Zararlı', style: style);
-                                        case 5: return const Text('Güvenli', style: style);
-                                        default: return const Text('');
+                                        case 0:
+                                          return const Text('Zararlı', style: style);
+                                        case 1:
+                                          return const Text('Güvenli', style: style);
+                                        case 2:
+                                          return const Text('Zararlı', style: style);
+                                        case 3:
+                                          return const Text('Güvenli', style: style);
+                                        case 4:
+                                          return const Text('Zararlı', style: style);
+                                        case 5:
+                                          return const Text('Güvenli', style: style);
+                                        default:
+                                          return const Text('');
                                       }
                                     },
                                     reservedSize: 40,

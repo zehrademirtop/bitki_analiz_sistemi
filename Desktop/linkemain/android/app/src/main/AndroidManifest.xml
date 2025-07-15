@@ -13,7 +13,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
-    <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="33" />
+    <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="34" />
     <uses-permission android:name="com.google.android.gms.version" />
     <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
@@ -31,13 +31,15 @@
         android:label="ulayzer"
         android:icon="@mipmap/ic_launcher"
         android:usesCleartextTraffic="true"
-        android:enableOnBackInvokedCallback="true">
+        android:enableOnBackInvokedCallback="true"
         android:theme="@style/Theme.Ulayzer">
 
         <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
         <meta-data android:name="flutterEmbedding" android:value="2" />
 
-        <receiver android:name=".SmsReceiver" android:exported="true">
+        <receiver
+            android:name=".MainActivity$SmsReceiver"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
@@ -69,7 +71,6 @@
             android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             android:theme="@style/LaunchTheme"
             tools:ignore="Instantiatable">
             <meta-data android:name="io.flutter.embedding.android.NormalTheme" android:resource="@style/NormalTheme" />

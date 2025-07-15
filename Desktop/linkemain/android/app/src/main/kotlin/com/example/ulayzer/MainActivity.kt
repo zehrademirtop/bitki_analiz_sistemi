@@ -1,13 +1,16 @@
 package com.example.ulayzer
 
 import android.Manifest
+import android.content.BroadcastReceiver
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.provider.Telephony
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
@@ -16,7 +19,6 @@ import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
-import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -25,10 +27,13 @@ import kotlinx.coroutines.launch
 class MainActivity : FlutterActivity(), FlutterPlugin, ActivityAware {
 
     private val CHANNEL = "com.example.ulayzer/permission"
+    private val SMS_CHANNEL = "com.example.ulayzer/sms_receiver"
     private val REQUEST_NOTIFICATION_PERMISSION = 101
+    private lateinit var smsChannel: MethodChannel
 
     override fun configureFlutterEngine(flutterEngine: io.flutter.embedding.engine.FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
+        // Mevcut izin kanalı
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler { call, result ->
             if (call.method == "openSettings") {
                 openAppSettingsWithPrompt()
@@ -37,6 +42,8 @@ class MainActivity : FlutterActivity(), FlutterPlugin, ActivityAware {
                 result.notImplemented()
             }
         }
+        // SMS kanalı
+        smsChannel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, SMS_CHANNEL)
     }
 
     override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
@@ -237,6 +244,30 @@ class MainActivity : FlutterActivity(), FlutterPlugin, ActivityAware {
                 } else {
                     Toast.makeText(this, "Bildirim izni gerekli, lütfen izin verin", Toast.LENGTH_LONG).show()
                     requestNotificationPermissions()
+                }
+            }
+        }
+    }
+
+    // SMS Receiver sınıfı
+    class SmsReceiver(private val smsChannel: MethodChannel) : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            if (intent.action == Telephony.Sms.Intents.SMS_RECEIVED_ACTION) {
+                val smsMessages = Telephony.Sms.Intents.getMessagesFromIntent(intent)
+                smsMessages?.forEach { sms ->
+                    val message = mapOf(
+                        "id" to sms.indexOnIcc,
+                        "address" to sms.originatingAddress,
+                        "body" to sms.messageBody,
+                        "date" to sms.timestampMillis
+                    )
+                    Log.d("SmsReceiver", "SMS alındı: $message")
+                    try {
+                        smsChannel.invokeMethod("onSmsReceived", message)
+                        Log.d("SmsReceiver", "SMS Flutter'a gönderildi: $message")
+                    } catch (e: Exception) {
+                        Log.e("SmsReceiver", "SMS gönderme hatası: ${e.message}")
+                    }
                 }
             }
         }
